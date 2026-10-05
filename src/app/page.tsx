@@ -2,6 +2,7 @@ import { inter, jetbrainsMono } from "@/utils/fonts";
 import { Analytics } from '@vercel/analytics/react';
 import Image from "next/image";
 import { Reveal } from "@/components/reveal";
+import { FillButton } from "@/components/fill-button";
 import { getSortedPostsData } from "@/lib/event-posts";
 import { MdDescription } from "react-icons/md";
 
@@ -70,12 +71,13 @@ export default function Home() {
               Our governing document outlines the society&apos;s structure, election process, and member rights. We encourage everyone, members and prospective members alike, to read it.
             </p>
             
-             <a href="/manifesto.pdf"
+<FillButton
+              href="/manifesto.pdf"
               target="_blank"
-              className={`${jetbrainsMono.className} inline-flex items-center gap-2 border border-on-surface text-on-surface px-6 py-3 uppercase tracking-widest text-sm hover:bg-surface-container-low transition-colors`}
+              className={`${jetbrainsMono.className} text-on-surface px-6 py-3 uppercase tracking-widest text-sm`}
             >
               View our constitution <MdDescription className="text-lg" />
-            </a>
+            </FillButton>
           </div>
         </div>
       </section>

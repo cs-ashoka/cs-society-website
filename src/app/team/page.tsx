@@ -41,6 +41,8 @@ const coreCommittee: CommitteeMember[] = [
 type FacultyAdvisor = {
   name: string;
   title: string;
+  image: string;
+  url: string;
 };
 
 // Placeholder advisors — swap in the real faculty names/titles/bios here.
@@ -48,10 +50,14 @@ const facultyAdvisors: FacultyAdvisor[] = [
   {
     name: "Aalok Thakkar",
     title: "Faculty Advisor",
+    image: "/team/aalokthakkar.jpg",
+    url: "https://www.ashoka.edu.in/profile/aalok-thakkar/",
   },
   {
     name: "Debayan Gupta",
     title: "Faculty Advisor",
+    image: "/team/debayangupta.jpg",
+    url: "https://www.ashoka.edu.in/profile/debayan-gupta/",
   },
 ];
 
@@ -194,11 +200,32 @@ export default function TeamPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {facultyAdvisors.map((advisor, i) => (
               <div key={i} className="group flex flex-row items-center gap-4">
-                <div className="w-24 h-24 flex-shrink-0 bg-surface rounded-full border-2 border-primary/20 group-hover:border-primary transition-colors flex items-center justify-center">
-                  <MdPerson className="text-4xl text-on-surface-variant/40" />
-                </div>
+                <a
+                  href={advisor.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${advisor.name}'s Ashoka profile`}
+                  className="relative w-24 h-24 flex-shrink-0 bg-surface rounded-full border-2 border-primary/20 group-hover:border-primary transition-colors overflow-hidden"
+                >
+                  <Image
+                    src={advisor.image}
+                    alt={advisor.name}
+                    fill
+                    sizes="96px"
+                    className="object-cover object-[50%_20%]"
+                  />
+                </a>
                 <div className="text-left">
-                  <h4 className="text-lg font-semibold text-on-surface">{advisor.name}</h4>
+                  <h4 className="text-lg font-semibold text-on-surface">
+                    <a
+                      href={advisor.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-primary transition-colors"
+                    >
+                      {advisor.name}
+                    </a>
+                  </h4>
                   <p className={`${jetbrainsMono.className} text-primary uppercase tracking-wide text-xs`}>
                     {advisor.title}
                   </p>

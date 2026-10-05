@@ -29,11 +29,11 @@ const coreCommittee: CommitteeMember[] = [
   { name: "Yashita Gupta", image: "/team/yashita.jpg", role: "Director of Events" },
   { name: "Rheyan Shah", role: "Director of Events" },
   { name: "Meyhar Lamba", image: "/team/meyhar.jpg", role: "Director of Marketing" },
-  { name: "Saachi Krishn", image: "/team/saachi.jpg", role: "Director of Marketing" },
+  { name: "Saachi Krishn", role: "Director of Marketing" },
   { name: "Jasmeh Sethi", image: "/team/jasmeh.jpg", role: "Deputy Director of Marketing" },
   { name: "Gauri Makker", image: "/team/gauri.jpg", role: "Director of Broadcast", socials: { linkedin: "https://www.linkedin.com/in/gaurimakker/" } },  
   { name: "Aaradhya Jain", image: "/team/aradhya.jpg", role: "Director of Broadcast" },
-  { name: "Saachi Khandeparkar", role: "Deputy Director of Broadcast" },
+  { name: "Saachi Khandeparkar", image: "/team/saachi.jpg", role: "Deputy Director of Broadcast" },
   { name: "Prisha Bindra", image: "/team/prisha.jpg", role: "Treasurer"},
   { name: "Naisha Sabnani", image: "/team/naisha.jpg", role: "Head of Advocacy"}
 ];
@@ -106,7 +106,7 @@ export default function TeamPage() {
                     alt={member.name}
                     fill
                     sizes="(min-width: 1024px) 240px, (min-width: 768px) 33vw, 100vw"
-                    className="object-cover"
+                    className="object-cover object-[50%_20%]"
                   />
                 ) : (
                   <MdPerson className="text-6xl text-on-surface-variant/40" />

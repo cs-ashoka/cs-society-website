@@ -57,14 +57,14 @@ export function Navbar() {
           })}
         </ul>
 
-        <div className="flex items-center justify-end gap-3"> <a href="/join-us.html"
+        <div className="flex items-center justify-end gap-3"> <ThemeToggle />
+<a href="/join-us.html"
   target="_blank"
   rel="noopener noreferrer"
   className={`${jetbrainsMono.className} hidden md:inline-block bg-primary text-on-primary px-5 py-2 text-sm uppercase tracking-wide rounded transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/30`}
 >
   Join Us
-</a>
-<ThemeToggle /></div>
+</a></div>
  
         <button
           className="md:hidden flex flex-col gap-1.5"

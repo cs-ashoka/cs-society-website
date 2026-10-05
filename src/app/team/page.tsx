@@ -20,22 +20,22 @@ type CommitteeMember = {
 
 // Placeholder roster — swap in the real Core Committee names/roles/social links here.
 const coreCommittee: CommitteeMember[] = [
-  { name: "Parth Agarwal", role: "President", socials: { website: "https://parthagarwal.vercel.app/", instagram: "https://www.instagram.com/parthagarwal429/", email: "parth.agarwal_ug2024@ashoka.edu.in", linkedin: "https://www.linkedin.com/in/parth-agarwal1512/" } },
-  { name: "Aaliya Ganguly", role: "President", },
-  { name: "Aujas Jain", role: "Vice President" },
-  { name: "Arnav Gupta", role: "Vice President" },
-  { name: "Savyamm Jhunjhunwala", role: "Director of Development" },
-  { name: "Anushka Kumari", role: "Director of Development"},
-  { name: "Yashita Gupta", role: "Director of Events" },
+  { name: "Parth Agarwal", image: "/team/parth.jpg", role: "President", socials: { website: "https://parthagarwal.vercel.app/", instagram: "https://www.instagram.com/parthagarwal429/", email: "parth.agarwal_ug2024@ashoka.edu.in", linkedin: "https://www.linkedin.com/in/parth-agarwal1512/" } },
+  { name: "Aaliya Ganguly", image: "/team/aaliya.jpg", role: "President", },
+  { name: "Aujas Jain", image: "/team/aujas.jpg", role: "Vice President" },
+  { name: "Arnav Gupta", image: "/team/arnav.jpg", role: "Vice President" },
+  { name: "Savyamm Jhunjhunwala", image: "/team/savyamm.jpg", role: "Director of Development" },
+  { name: "Anushka Kumari", image: "/team/anushka.jpg", role: "Director of Development"},
+  { name: "Yashita Gupta", image: "/team/yashita.jpg", role: "Director of Events" },
   { name: "Rheyan Shah", role: "Director of Events" },
-  { name: "Meyhar Lamba", role: "Director of Marketing" },
-  { name: "Saachi Krishn", role: "Director of Marketing" },
-  { name: "Jasmeh Sethi", role: "Deputy Director of Marketing" },
-  { name: "Gauri Makker", role: "Director of Broadcast", socials: { linkedin: "https://www.linkedin.com/in/gaurimakker/" } },  
-  { name: "Aaradhya Jain", role: "Director of Broadcast" },
+  { name: "Meyhar Lamba", image: "/team/meyhar.jpg", role: "Director of Marketing" },
+  { name: "Saachi Krishn", image: "/team/saachi.jpg", role: "Director of Marketing" },
+  { name: "Jasmeh Sethi", image: "/team/jasmeh.jpg", role: "Deputy Director of Marketing" },
+  { name: "Gauri Makker", image: "/team/gauri.jpg", role: "Director of Broadcast", socials: { linkedin: "https://www.linkedin.com/in/gaurimakker/" } },  
+  { name: "Aaradhya Jain", image: "/team/aradhya.jpg", role: "Director of Broadcast" },
   { name: "Saachi Khandeparkar", role: "Deputy Director of Broadcast" },
-  { name: "Prisha Bindra", role: "Treasurer"},
-  { name: "Naisha Sabnani", role: "Head of Advocacy"}
+  { name: "Prisha Bindra", image: "/team/prisha.jpg", role: "Treasurer"},
+  { name: "Naisha Sabnani", image: "/team/naisha.jpg", role: "Head of Advocacy"}
 ];
 
 type FacultyAdvisor = {

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import cn from "@/utils/cn";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -20,7 +21,7 @@ export function Navbar() {
   const pathname = usePathname();
 
   return (
-    <nav className="sticky top-0 z-50 bg-gray-100/90 backdrop-blur-md border-b border-border">
+    <nav className="sticky top-0 z-50 bg-surface-container-low/90 backdrop-blur-md border-b border-border">
      <div className="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
         <a href="/" className="flex items-center">
           <Image
@@ -56,13 +57,14 @@ export function Navbar() {
           })}
         </ul>
 
-        <div className="flex justify-end"> <a href="/join-us.html"
+        <div className="flex items-center justify-end gap-3"> <a href="/join-us.html"
   target="_blank"
   rel="noopener noreferrer"
   className={`${jetbrainsMono.className} hidden md:inline-block bg-primary text-on-primary px-5 py-2 text-sm uppercase tracking-wide rounded transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/30`}
 >
   Join Us
-</a></div>
+</a>
+<ThemeToggle /></div>
  
         <button
           className="md:hidden flex flex-col gap-1.5"

@@ -542,7 +542,7 @@ export function UnderConstruction({ title = "this page." }: { title?: string }) 
         </Link>
         <Link
           href="/events"
-          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-11 px-6 text-sm font-medium rounded bg-on-surface text-white hover:bg-primary transition-colors"
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-11 px-6 text-sm font-medium rounded bg-inverse-surface text-white hover:bg-primary transition-colors"
         >
           <MdCode className="text-base" />
           Explore Events

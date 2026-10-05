@@ -269,7 +269,7 @@ export default function TeamPage() {
 
       {/* CTA */}
       <section className="max-w-5xl mx-auto px-6 pb-20">
-        <Reveal className="text-center bg-on-surface text-white rounded-2xl py-16 px-6">
+        <Reveal className="text-center bg-inverse-surface text-white rounded-2xl py-16 px-6">
           <h2 className="text-3xl font-semibold mb-3">Interested in joining the team?</h2>
           <p className="text-white/70 mb-8 max-w-xl mx-auto">
             Applications for the core will open next monsoon semester. In the meantime, you can join the society as a member.

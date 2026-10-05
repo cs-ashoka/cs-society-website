@@ -11,11 +11,11 @@ export default function Home() {
   return (
     <main className={`${inter.className} min-h-screen bg-background`}>
       {/* Hero */}
-<section className="relative py-8 px-6 overflow-hidden bg-[#fdf2f2]">
+<section className="relative py-8 px-6 overflow-hidden bg-hero-tint">
   <div
     className="absolute inset-0 opacity-40 pointer-events-none"
     style={{
-      backgroundImage: 'radial-gradient(#e2e8f0 1px, transparent 1px)',
+      backgroundImage: 'radial-gradient(rgb(var(--c-border)) 1px, transparent 1px)',
       backgroundSize: '32px 32px',
     }}
   />
@@ -128,7 +128,7 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Reveal delayMs={0} className="group bg-surface border border-border p-4 rounded-xl card-glow">
-              <div className="relative overflow-hidden aspect-video rounded-lg mb-4 bg-on-surface flex items-center justify-center">
+              <div className="relative overflow-hidden aspect-video rounded-lg mb-4 bg-inverse-surface flex items-center justify-center">
                 <span className={`${jetbrainsMono.className} text-white/40 text-xs uppercase tracking-widest`}>
                   CS Mixer 2026
                 </span>
@@ -207,7 +207,7 @@ export default function Home() {
       </section>
 
       {/* Join CTA */}
-      <section className="py-24 px-6 bg-on-surface text-white text-center">
+      <section className="py-24 px-6 bg-inverse-surface text-white text-center">
         <h2 className="text-3xl font-semibold mb-3">Interested in joining the Society?</h2>
         <p className="text-white/70 mb-8 max-w-md mx-auto">
           Inductions open every semester. No prior experience required, just curiosity.

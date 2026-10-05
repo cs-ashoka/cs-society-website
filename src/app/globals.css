@@ -2,6 +2,44 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --c-primary: 216 0 50;
+  --c-on-primary: 255 255 255;
+  --c-secondary: 94 94 94;
+  --c-background: 247 249 251;
+  --c-surface: 255 255 255;
+  --c-surface-container: 236 238 240;
+  --c-surface-container-low: 242 244 246;
+  --c-on-surface: 25 28 30;
+  --c-on-surface-variant: 93 63 60;
+  --c-tertiary: 77 92 114;
+  --c-border: 226 226 226;
+  --c-inverse-surface: 25 28 30;
+  --c-hero-tint: 253 242 242;
+}
+
+.dark {
+  color-scheme: dark;
+  --c-primary: 255 74 106;
+  --c-on-primary: 255 255 255;
+  --c-secondary: 168 172 178;
+  --c-background: 14 16 18;
+  --c-surface: 24 27 30;
+  --c-surface-container: 36 40 44;
+  --c-surface-container-low: 30 33 37;
+  --c-on-surface: 232 234 236;
+  --c-on-surface-variant: 200 184 182;
+  --c-tertiary: 130 148 172;
+  --c-border: 52 56 61;
+  --c-inverse-surface: 30 33 37;
+  --c-hero-tint: 28 20 22;
+}
+
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+
 .base-img {
   vertical-align: middle;
   position: relative;
@@ -90,6 +128,6 @@
 }
 
 .grid-bg {
-  background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
+  background-image: radial-gradient(rgb(var(--c-border)) 1px, transparent 1px);
   background-size: 32px 32px;
 }

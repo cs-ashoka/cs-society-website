@@ -52,20 +52,20 @@ export default async function EventsPost({ params }: { params: { slug: string } 
       
       {/* <div className={`absolute ml-1/5`}>/</div> */}
       <div className={`md:w-3/5 w-5/6 mx-auto mb-10`}>
-        <div className={`md:bg-white bg-primary px-10 py-3 rounded-2xl w-full mx-auto md:mt-[4vh]`}>
+        <div className={`md:bg-surface bg-primary px-10 py-3 rounded-2xl w-full mx-auto md:mt-[4vh]`}>
           <p
             className={`${bayon.className} md:text-primary text-white text-5xl md:text-8xl font-bold text-center`}
           >
             {title}
           </p>
-          <p className={`${poppins.className} text-black md:text-4md font-bold text-center`}>
+          <p className={`${poppins.className} text-on-surface md:text-4md font-bold text-center`}>
             {date}
           </p>
         </div>
       </div>
       <div className={`w-11/12 mx-auto mb-10`}>
-        <div className={`bg-white py-5 px-10 rounded-2xl max-md:text-center mt-8`}>
-          <section className={`${poppins.className} text-black md:text-4md text-justify`} dangerouslySetInnerHTML={{ __html: contentHtml }} />
+        <div className={`bg-surface py-5 px-10 rounded-2xl max-md:text-center mt-8`}>
+          <section className={`${poppins.className} text-on-surface md:text-4md text-justify`} dangerouslySetInnerHTML={{ __html: contentHtml }} />
         </div>
         <br></br><br></br>
         <GalleryWithCarousel imageList = {imgList} type = {type}/>

@@ -328,8 +328,7 @@ The site is mid-redesign. Some pages are finished in the new style, some are sti
 
 | Status | Pages |
 |---|---|
-| ✅ **Redesigned** | `/` (home), `/team` |
-| 🕰️ **Old design (works, not yet redesigned)** | `/about`, `/events`, `/events/[slug]`, `/resources` |
+| ✅ **Redesigned** | `/` (home), `/team`, `/about`, `/events`, `/events/[slug]`, `/resources` |
 | 🚧 **"Under construction" placeholder** | `/projects`, `/publications`, `/manifesto`, `/newsletter`, `/internships`, `/internships/internships_info`, `/ashoka-starter-pack`, `/learningcs` and **all ~28 pages under `/learningcs/*`** |
 
 The redesigned pages are the best examples to copy from: **look at `src/app/team/page.tsx` and `src/app/page.tsx` for the current style** (Tailwind, colour tokens, JetBrains Mono labels, `Reveal` animations). Old pages use `bayon`/`poppins` fonts and inline styles.
@@ -343,8 +342,7 @@ The PDFs (`manifesto.pdf`, `newsletter_23-24.pdf`, `ashoka-starter-pack.pdf`) ar
 Things that aren't obvious and might trip you up:
 
 - **`src/pages/helpdesk.tsx` is dead code.** Next.js has two routing systems (`app/` and the older `pages/`). Everything real lives in `app/`. The `helpdesk` files are leftovers; don't build on them.
-- **Event dates are plain text** (e.g. `'25/09/2023'`) and are sorted as strings, so "newest first" can come out wrong across years or with inconsistent formatting. Keep the format consistent, and if ordering looks off, this is why. A good first improvement would be switching to `YYYY-MM-DD`.
-- **`events/[slug]/page.tsx` calls `NotFound()` without `return`**, so a bad URL like `/events/does-not-exist` will error instead of showing a clean 404. Should use `notFound()` from `next/navigation`.
+- **Event dates** are written as `dd/mm/yyyy` and parsed for sorting in `event-posts.ts`. Keep that format.
 - **Images use `unoptimized`** in places, which skips Next.js's automatic image compression. Compress big images yourself before adding them, as they're loaded as-is.
 - **Some files start with an invisible BOM character** (`﻿`) at the top. It's harmless.
 - **Videos:** `videos/get-started.mp4.json` and the `next-video` package are remnants from an earlier experiment. Event videos are just plain `.mp4` files in `public/img/events/videos/`.

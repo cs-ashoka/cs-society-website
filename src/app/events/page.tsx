@@ -1,51 +1,108 @@
-// src/pages/about.js
-import React from 'react';
-import { bayon } from "@/utils/fonts";
-import { poppins } from "@/utils/fonts";
 import Image from "next/image";
-import Countdown from "../../components/countdown/counter";
-import EventCard from '@/components/cards/event-card';
-import { getSortedPostsData } from '@/lib/event-posts';
-import { MasonryGridGallery } from "@/components/carousel/masonry";
+import Link from "next/link";
+import { jetbrainsMono } from "@/utils/fonts";
+import { Reveal } from "@/components/reveal";
+import { PageHeader } from "@/components/page-header";
+import { getSortedPostsData } from "@/lib/event-posts";
 
+export const metadata = { title: "Events | CS Society @ Ashoka" };
 
-const EventsPage = () => {
-  const eventPosts = getSortedPostsData();
+const highlights = [
+  "/img/events/notion_4.jpeg",
+  "/img/events/gather_2.png",
+  "/img/events/acadsocsfair_3.jpg",
+  "/img/events/aoc_14.jpg",
+  "/img/events/blockchain_2.jpg",
+  "/img/events/blockchain_1.jpg",
+  "/img/events/acadsocsfair_2.jpg",
+  "/img/events/pmclub_1.jpg",
+  "/img/events/researchshowcase_3.png",
+  "/img/events/bash_1.jpg",
+  "/img/events/aoc_12.jpg",
+];
+
+export default function EventsPage() {
+  const events = getSortedPostsData();
   return (
-    <main className={`w-full h-fit max-md:mt-[4vh] overflow-x-hidden`}>
-      
-      <div className={`w-full mx-auto grid grid-rows-2 grid-flow-col`}>
-        <div className={`w-full mx-auto mt-[4vh] md:mt-[0vh]`}>
-          <p
-            className={`${bayon.className} text-primary text-5xl md:text-7xl font-bold text-center`}
+    <main className="min-h-screen bg-background">
+      <PageHeader eyebrow="Events // Archive" title="Events">
+        Workshops, socials, and the occasional chaos. Here&apos;s what we&apos;ve been up to.
+      </PageHeader>
+
+      <section className="max-w-5xl mx-auto px-6 pt-12">
+        <Reveal className="flex flex-wrap items-center justify-between gap-4 bg-inverse-surface text-white rounded-xl p-6">
+          <div>
+            <span className={`${jetbrainsMono.className} text-primary uppercase tracking-widest text-xs block mb-1`}>
+              Up next
+            </span>
+            <p className="text-lg font-semibold">New events are coming next semester.</p>
+          </div>
+          <a
+            href="https://www.instagram.com/cs.ashoka/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`${jetbrainsMono.className} bg-primary text-on-primary px-5 py-2 text-sm uppercase tracking-widest rounded hover:opacity-90 transition-opacity`}
           >
-            <a href ="https://unstop.com/competitions/space-turtle-banjaara-2024-ashoka-university-sonepat-haryana-923810"> NEW EVENTS </a>
-          </p>
-          <p className={`${poppins.className} md:-mt-2 -mt-1 text-primary text-center font-medium`} style={{ fontStyle: 'italic' }}>
-            coming next semester!
-          </p>
+            Follow for updates
+          </a>
+        </Reveal>
+      </section>
+
+      <section className="max-w-5xl mx-auto px-6 py-16">
+        <Reveal className="flex items-center gap-4 mb-8">
+          <h2 className="text-3xl font-semibold">Recent events</h2>
+          <div className="flex-grow h-px bg-border" />
+          <span className={`${jetbrainsMono.className} text-secondary text-sm`}>{events.length} posts</span>
+        </Reveal>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {events.map((event, i) => (
+            <Reveal key={event.slug} delayMs={(i % 3) * 100}>
+              <Link
+                href={`/events/${event.slug}`}
+                className="group block h-full bg-surface border border-border p-4 rounded-xl card-glow"
+              >
+                <div className="relative overflow-hidden aspect-video rounded-lg mb-4 bg-surface-container-low">
+                  <Image
+                    src={`/img/events/${event.slug}.png`}
+                    alt={event.title}
+                    fill
+                    unoptimized
+                    className="object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
+                  />
+                </div>
+                <h3 className="text-lg font-semibold mb-3 group-hover:text-primary transition-colors">{event.title}</h3>
+                <div className="pt-3 border-t border-border flex justify-between items-center">
+                  <span className={`${jetbrainsMono.className} text-xs text-on-surface-variant uppercase`}>{event.date}</span>
+                  <span className="text-primary group-hover:translate-x-1 transition-transform">→</span>
+                </div>
+              </Link>
+            </Reveal>
+          ))}
         </div>
-      </div>
-      <div className={`w-full ml-10 md:ml-32`}>
-        <p className={`${bayon.className} text-primary text-4xl`}>
-          RECENT EVENTS:
-        </p>
-      </div>
-      <div className={`mx-auto w-5/6 md:w-4/5 grid grid-cols-2 mb-10 md:mb-0 md:grid-cols-5 mt-4 gap-8`}>
-        {eventPosts.map(event => (
-          <EventCard key={event.slug} imgSrc={`/img/events/${event.slug}.png`} name={event.title} link={`/events/${event.slug}`} />
-        ))}
-      </div>
-      <div className={`w-full ml-10 md:ml-32 mt-20 md:mt-8`}>
-      <p className={`${bayon.className} text-primary text-4xl`}>
-          HIGHLIGHTS:
-        </p>
-      </div>
-      <div className={`mx-auto w-5/6 md:w-4/5 mb-10 md:mb-0 mt-4`}>
-      <MasonryGridGallery />
-      </div>
+      </section>
+
+      <section className="py-16 px-6 bg-surface-container-low border-t border-border">
+        <div className="max-w-5xl mx-auto">
+          <Reveal className="mb-8">
+            <span className={`${jetbrainsMono.className} text-primary uppercase tracking-widest text-xs block mb-2`}>
+              Gallery
+            </span>
+            <h2 className="text-3xl font-semibold">Highlights</h2>
+          </Reveal>
+          <div className="columns-2 md:columns-3 lg:columns-4 gap-4 [&>*]:mb-4">
+            {highlights.map((src) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                key={src}
+                src={src}
+                alt=""
+                loading="lazy"
+                className="w-full rounded-lg border border-border break-inside-avoid grayscale hover:grayscale-0 transition-all duration-500"
+              />
+            ))}
+          </div>
+        </div>
+      </section>
     </main>
   );
-};
-
-export default EventsPage;
+}

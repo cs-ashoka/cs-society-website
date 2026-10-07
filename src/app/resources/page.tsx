@@ -1,119 +1,37 @@
-'use client';
-
-import Image from "next/image";
-import React from "react";
-import { useState, useEffect, useCallback } from "react";
-import "./resources.css";
-import { Navbar } from "@/components/navbar/Navbar";
-
-
 import Link from "next/link";
+import { jetbrainsMono } from "@/utils/fonts";
+import { Reveal } from "@/components/reveal";
+import { PageHeader } from "@/components/page-header";
+import { MdSchool, MdWork, MdDescription, MdArrowForward } from "react-icons/md";
 
-import mag from "../../../public/img/magnifier.png";
-import { link } from "fs";
+export const metadata = { title: "Resources | CS Society @ Ashoka" };
 
-interface bProps {
-  name: string;
-  link: string;
-  isMobile:boolean;
-}
-
-function Button({name, link, isMobile}: bProps) {
-
-
-  return (
-    <Link className="link" href={link}>
-      <div className="resources-button" style={isMobile ? {"width" : "90vw", "height" : "100px", "borderRadius": "35px", "fontSize": "24px", "fontWeight":"600"} : {}}>
-        {name}
-      </div>
-    </Link>
-  )
-}
-
-const useMediaQuery = (width:number) => {
-  const [targetReached, setTargetReached] = useState(false);
-
-  const updateTarget = useCallback((e:any) => {
-    if (e.matches) {
-      setTargetReached(true);
-    } else {
-      setTargetReached(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    const media = window.matchMedia(`(max-width: ${width}px)`);
-    media.addListener(updateTarget);
-
-    if (media.matches) {
-      setTargetReached(true);
-    }
-
-    return () => media.removeListener(updateTarget);
-  }, []);
-
-  return targetReached;
-};
+const resources = [
+  { title: "Learning CS", desc: "Guides and notes from programming basics to ML, web dev, and competitive programming.", href: "/learningcs", Icon: MdSchool },
+  { title: "Internships", desc: "Where to look, how to apply, and what past students did.", href: "/internships", Icon: MdWork },
+  { title: "Ashoka starter pack", desc: "Everything a new CS student should know, in one PDF.", href: "/ashoka-starter-pack.pdf", Icon: MdDescription },
+];
 
 export default function Resources() {
-    const [isMobile, setIsMobile] = useState(false);
-    const [scrollOpacity, setScrollOpacity] = useState(1);
-
-    var m = useMediaQuery(768);
-    useEffect(()=> {
-      setIsMobile(m);
-    }, [m])
-
-      useEffect(() => {
-        const handleScroll = () => {
-          const scrollY = window.scrollY || window.pageYOffset;
-          const newOpacity = Math.max(0.4, 1 - scrollY / 500);
-          const clampedOpacity = Math.min(1, Math.max(0, newOpacity));
-          setScrollOpacity(clampedOpacity);
-        };
-    
-        window.addEventListener('scroll', handleScroll);
-        return () => {
-          window.removeEventListener('scroll', handleScroll);
-        };
-      }, []);
-
-
-
-
-    if (!isMobile || !m) {
-      return (
-        <div className="resources">
-            <div className="background-text" style={{ opacity: scrollOpacity }}>
-                RESOURCES
-            </div>
-            <main className="resources-main-content">
-            <div className="resources-header">
-              <p className="red-text">What resources does the Computer Science Society have for you?</p>
-              <Image className="magnifier" src={mag} alt="Magnifier"/>
-            </div>
-            <div className="resources-buttons">
-              <Button name={"Learning CS"} link={"/learningcs"} isMobile={isMobile}/>
-              <Button name={"Internships"} link={"/internships"} isMobile={isMobile}/>
-            </div>
-            </main>
-        </div>
-    )
-    } else {
-      return (
-        <div className="resources" style={{"height": "auto"}}>
-          <div className="background-text-m">
-            RESOURCES
-          </div>
-          <main className="resources-main-content-m">
-            <div className="resources-header-m">
-              <p className="red-text">What resources does CS Soc have for you?</p>
-              <Image className="magnifier" src={mag} alt="Magnifier"></Image>
-            </div>
-            <Button name={"Learning CS"} link={"/learningcs"} isMobile={isMobile}/>
-            <Button name={"Internships"} link={"/internships/internships_info"} isMobile={isMobile}/>
-          </main>
-        </div>
-      )
-    }
+  return (
+    <main className="min-h-screen bg-background">
+      <PageHeader eyebrow="Resources // Toolkit" title="Resources">
+        What does the Computer Science Society have for you? Start here.
+      </PageHeader>
+      <section className="max-w-5xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-3 gap-6">
+        {resources.map(({ title, desc, href, Icon }, i) => (
+          <Reveal key={title} delayMs={i * 100} className="h-full">
+            <Link href={href} className="group flex flex-col h-full bg-surface border border-border rounded-xl p-6 card-glow">
+              <Icon className="text-3xl text-primary mb-6" />
+              <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">{title}</h3>
+              <p className="text-on-surface-variant text-sm mb-6 flex-grow">{desc}</p>
+              <span className={`${jetbrainsMono.className} text-xs uppercase tracking-widest flex items-center gap-2 text-on-surface group-hover:text-primary transition-colors`}>
+                Explore <MdArrowForward className="group-hover:translate-x-1 transition-transform" />
+              </span>
+            </Link>
+          </Reveal>
+        ))}
+      </section>
+    </main>
+  );
 }

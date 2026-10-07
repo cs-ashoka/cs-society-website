@@ -9,7 +9,13 @@ type EventPost = {
     title: string,
     date: string,
     imgList: string[]
-    type: "image" | "video"
+    type: ("image" | "video")[]
+}
+
+// Dates are written as dd/mm/yyyy (day and month may be unpadded); turn them into a sortable number.
+function dateValue(date: string) {
+    const [d, m, y] = String(date).split('/').map(Number);
+    return new Date(y, (m || 1) - 1, d || 1).getTime();
 }
 
 const postsDirectory = path.join(process.cwd(), '/src/eventposts')
@@ -32,15 +38,15 @@ export function getSortedPostsData() {
             slug,
             title: matterResult.data.title,
             date: matterResult.data.date,
-            imgList: matterResult.data.imgList,
-            type: matterResult.data.type
+            imgList: matterResult.data.imgList ?? [],
+            type: matterResult.data.type ?? []
         }
 
         // Combine the data with the id
         return eventPost
     });
     // Sort posts by date
-    return allPostsData.sort((a, b) => a.date < b.date ? 1 : -1);
+    return allPostsData.sort((a, b) => dateValue(b.date) - dateValue(a.date));
 }
 
 export async function getPostData(slug: string) {
@@ -62,8 +68,8 @@ export async function getPostData(slug: string) {
         title: matterResult.data.title,
         date: matterResult.data.date,
         contentHtml,
-        imgList: matterResult.data.imgList, 
-        type: matterResult.data.type
+        imgList: matterResult.data.imgList ?? [], 
+        type: matterResult.data.type ?? []
     }
 
     // Combine the data with the id

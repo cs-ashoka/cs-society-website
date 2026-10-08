@@ -5,6 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import cn from "@/utils/cn";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { AocNavLink, MapleLeaf, AOC_HREF } from "./AocNavLink";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -32,7 +33,7 @@ export function Navbar() {
             unoptimized
           />
         </a>
-        <ul className={`${jetbrainsMono.className} hidden md:flex items-center justify-center gap-8 text-sm uppercase tracking-wide`}>
+        <ul className={`${jetbrainsMono.className} hidden md:flex items-center justify-center gap-4 lg:gap-8 text-sm uppercase tracking-wide`}>
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
             return (
@@ -55,13 +56,16 @@ export function Navbar() {
               </li>
             );
           })}
+          <li>
+            <AocNavLink />
+          </li>
         </ul>
 
         <div className="flex items-center justify-end gap-3"> <ThemeToggle />
 <a href="/join-us.html"
   target="_blank"
   rel="noopener noreferrer"
-  className={`${jetbrainsMono.className} hidden md:inline-block bg-primary text-on-primary px-5 py-2 text-sm uppercase tracking-wide rounded transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/30`}
+  className={`${jetbrainsMono.className} hidden md:inline-block whitespace-nowrap bg-primary text-on-primary px-5 py-2 text-sm uppercase tracking-wide rounded transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/30`}
 >
   Join Us
 </a></div>
@@ -96,6 +100,16 @@ export function Navbar() {
               </li>
             );
           })}
+          <li>
+            <a
+              href={AOC_HREF}
+              onClick={() => setOpen(false)}
+              className="inline-flex items-center gap-2 text-[#9B2226] dark:text-[#EBC08F] hover:text-primary transition-colors"
+            >
+              <MapleLeaf className="aoc-icon" />
+              Autumn of Code
+            </a>
+          </li>
         </ul>
       )}
     </nav>

@@ -168,3 +168,117 @@ body {
     animation: none;
   }
 }
+
+/* ---------- Autumn of Code nav button ---------- */
+.aoc-link {
+  --aoc-maple: #9B2226;
+  --aoc-straw: #D4A373;
+  --aoc-paper: #F6DDBA;
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  text-decoration: none;
+  border-radius: 9999px;
+}
+.aoc-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.3em 0.8em 0.3em 0.65em;
+  border: 1px solid var(--aoc-straw);
+  border-radius: 9999px;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+.aoc-ghost { visibility: hidden; }
+.aoc-live {
+  position: absolute;
+  top: 0;
+  right: 0;   /* unfold leftwards, away from the theme toggle and Join Us */
+  z-index: 10;
+  width: max-content;   /* let the label unfold past the button's resting width */
+  background: rgba(212, 163, 115, 0.22);
+  color: var(--aoc-maple);
+  transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+}
+.aoc-link.is-active .aoc-live { border-color: var(--aoc-maple); }
+/* dark mode: wheat on the dark bar instead of maple, which would sink into it */
+.dark .aoc-live {
+  color: #EBC08F;
+  border-color: rgba(212, 163, 115, 0.55);
+  background: rgba(212, 163, 115, 0.12);
+}
+
+
+.aoc-icon {
+  width: 0.95em;
+  height: 0.95em;
+  flex: none;
+  transform-origin: 50% 90%;
+  animation: aoc-sway 3.2s ease-in-out infinite alternate;
+}
+@keyframes aoc-sway {
+  from { transform: rotate(-14deg); }
+  to { transform: rotate(10deg); }
+}
+
+/* "AOC" unfolds into "AUTUMN OF CODE": the hidden letters open between the initials */
+.aoc-word { display: inline-flex; align-items: baseline; }
+.aoc-more {
+  display: inline-grid;
+  grid-template-columns: 0fr;
+  transition: grid-template-columns 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.aoc-more > span {
+  min-width: 0;
+  overflow: hidden;
+  white-space: pre;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.aoc-link:hover .aoc-live,
+.aoc-link:focus-visible .aoc-live {
+  background: var(--aoc-maple);
+  border-color: var(--aoc-maple);
+  color: var(--aoc-paper);
+  box-shadow: 0 6px 16px -6px rgba(155, 34, 38, 0.55);
+}
+.aoc-link:hover .aoc-more,
+.aoc-link:focus-visible .aoc-more { grid-template-columns: 1fr; }
+.aoc-link:hover .aoc-more > span,
+.aoc-link:focus-visible .aoc-more > span { opacity: 1; transition-delay: 0.08s; }
+.aoc-link:focus-visible { outline: none; }
+.aoc-link:focus-visible .aoc-live { outline: 2px solid var(--aoc-maple); outline-offset: 3px; }
+
+/* leaves drifting down over the word while it is hovered */
+.aoc-fall {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.aoc-leaf {
+  position: absolute;
+  top: 0;
+  left: var(--x);
+  width: var(--size);
+  height: var(--size);
+  opacity: 0;
+}
+.aoc-link:hover .aoc-leaf {
+  animation: aoc-fall var(--dur) linear var(--delay) infinite;
+}
+@keyframes aoc-fall {
+  0% { transform: translate(0, -16px) rotate(0deg); opacity: 0; }
+  15% { opacity: 1; }
+  50% { transform: translate(var(--sway), 6px) rotate(160deg); }
+  85% { opacity: 1; }
+  100% { transform: translate(calc(var(--sway) * -0.5), 28px) rotate(300deg); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aoc-icon,
+  .aoc-link:hover .aoc-leaf { animation: none; }
+  .aoc-more,
+  .aoc-more > span { transition: none; }
+}

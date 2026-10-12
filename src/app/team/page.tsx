@@ -24,8 +24,6 @@ const verticals = [
   { name: "Events", blurb: "Workshops, socials, hackathons, and the CS Mixer." },
   { name: "Development", blurb: "This website, internal tools, and member projects." },
   { name: "Marketing", blurb: "Design, social media, and how the society shows up." },
-  { name: "Outreach & Logistics", blurb: "Speakers, partnerships, and making events actually happen." },
-  { name: "Finance", blurb: "Budgets, sponsorships, and keeping the society solvent." },
   { name: "Broadcast", blurb: "Photo, video, and the stories we tell about the year." },
 ];
 
@@ -106,7 +104,7 @@ export default function TeamPage() {
           <h2 className="text-3xl font-semibold text-on-surface">How we&apos;re organised</h2>
           <div className="flex-grow h-px bg-border" />
         </Reveal>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {verticals.map((v, i) => (
             <Reveal key={v.name} delayMs={i * 80} className="group bg-surface border border-border rounded-xl p-6 card-glow">
               <span className={`${jetbrainsMono.className} text-xs text-on-surface-variant block mb-3`}>
@@ -117,6 +115,10 @@ export default function TeamPage() {
             </Reveal>
           ))}
         </div>
+        <p className="mt-6 text-sm text-on-surface-variant max-w-2xl">
+          Four departments sit under the core leadership (the Presidents and Vice Presidents), alongside the Treasurer
+          and the Head of Advocacy.
+        </p>
       </section>
 
 

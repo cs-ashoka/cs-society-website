@@ -29,7 +29,7 @@ const faqs = [
     a: (
       <p>
         We&apos;re glad you&apos;re interested. Inductions for our verticals, namely{" "}
-        <strong className="text-on-surface">Events, Marketing, Outreach &amp; Logistics, Dev, and Finance</strong>, open
+        <strong className="text-on-surface">Events, Development, Marketing, and Broadcast</strong>, open
         every semester. Details are sent to your Ashoka inbox closer to the cycle.
       </p>
     ),

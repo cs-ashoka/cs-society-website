@@ -908,7 +908,8 @@
   const leaves = (() => {
     const back = $('.leaves.back'), front = frontCanvas;
     const bctx = back.getContext('2d'), fctx = front.getContext('2d');
-    const COLORS = ['#9B2226', '#8B5A2B', '#CA8A04', '#B4532A', '#9B2226'];
+    // soft, light tones for the falling leaves so the cursor trail (TRAIL_COLORS) reads clearly darker
+    const COLORS = ['#C97B6B', '#C4A27A', '#E3B84F', '#D49A78', '#C97B6B'];
     // a maple leaf in a 100 x 100 box, base of the blade at (50, 74)
     const half = [[50,74],[60,76],[66,86],[69,73],[82,75],[78,66],[95,52],[84,49],[88,39],[76,41],[73,32],[66,43],[67,22],[60,28],[57,16],[53,19],[50,4]];
     const outline = new Path2D();
@@ -943,7 +944,7 @@
         vr: rand(-0.6, 0.6),
         flip: rand(0.6, 1.6),
         c: COLORS[Math.floor(Math.random() * COLORS.length)],
-        a: isNear ? rand(0.55, 0.8) : lerp(0.25, 0.8, z)
+        a: isNear ? rand(0.35, 0.5) : lerp(0.15, 0.5, z)
       };
     }
     function draw(ctx, l, dt) {

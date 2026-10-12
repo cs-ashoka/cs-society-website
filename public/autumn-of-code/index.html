@@ -985,6 +985,7 @@
     const tcv = $('.leaves.trail'), tctx = tcv.getContext('2d');
     const mouse = { x: 0, y: 0, lx: 0, ly: 0, seen: false, carry: 0 };
     const sparks = [];
+    const TRAIL_COLORS = ['#5E1013', '#4A2C14', '#7A3F0C', '#6B2A12', '#5E1013'];   // deeper than the falling leaves
     const LIFE = 1.0, MAX_SPARKS = 14;
     function spawn(x, y) {
       if (sparks.length >= MAX_SPARKS) return;
@@ -993,8 +994,8 @@
         x: x + Math.cos(ang) * d, y: y + Math.sin(ang) * d,
         vx: rand(-14, 14), vy: rand(6, 26),
         rot: rand(0, 6.28), vr: rand(-1.2, 1.2),
-        s: rand(14, 26), c: COLORS[Math.floor(Math.random() * COLORS.length)],
-        age: 0, peak: rand(0.16, 0.26)
+        s: rand(14, 26), c: TRAIL_COLORS[Math.floor(Math.random() * TRAIL_COLORS.length)],
+        age: 0, peak: rand(0.45, 0.65)
       });
     }
     function drawTrail(dt) {
@@ -1018,7 +1019,7 @@
         tctx.rotate(l.rot);
         tctx.scale(k, k);
         tctx.translate(-50, -50);
-        tctx.globalAlpha = a * 0.4; tctx.fillStyle = l.c; tctx.fill(outline);
+        tctx.globalAlpha = a * 0.5; tctx.fillStyle = l.c; tctx.fill(outline);
         tctx.globalAlpha = a; tctx.strokeStyle = l.c; tctx.lineJoin = 'round';
         tctx.lineWidth = 1.4 / k; tctx.stroke(outline);
         tctx.lineWidth = 0.9 / k; tctx.stroke(veins);

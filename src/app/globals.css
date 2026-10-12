@@ -194,7 +194,7 @@ body {
 .aoc-live {
   position: absolute;
   top: 0;
-  right: 0;   /* unfold leftwards, away from the theme toggle and Join Us */
+  left: 0;   /* unfold rightwards, over the space after the nav links */
   z-index: 10;
   width: max-content;   /* let the label unfold past the button's resting width */
   background: rgba(212, 163, 115, 0.22);

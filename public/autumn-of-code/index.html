@@ -86,7 +86,7 @@
     will-change: transform;
   }
 
-  /* a chain of small leaves that trails the mouse; sharp, above the page, below the grain */
+  /* faint leaves that flicker up near a moving mouse; sharp, above the page, below the grain */
   .leaves.trail { z-index: 48; }
 
   /* Paper tooth and a lens vignette, above everything, never intercepting input */
@@ -972,42 +972,49 @@
       }
       ctx.restore();
     }
-    // ---- Cursor trail: a chain of leaves, each easing toward the one ahead of it ----
+    // ---- Cursor trail: faint leaves appear at random spots near a moving cursor and fade within a second ----
     const tcv = $('.leaves.trail'), tctx = tcv.getContext('2d');
-    const mouse = { x: 0, y: 0, seen: false, on: false, fade: 0 };
-    const chain = Array.from({ length: 9 }, (_, i) => ({
-      x: 0, y: 0, rot: rand(0, 6.28), phase: rand(0, 6.28),
-      s: lerp(40, 17, i / 8),
-      c: COLORS[i % COLORS.length],
-      k: lerp(0.28, 0.09, i / 8)   // follow speed: the tail lags further behind
-    }));
+    const mouse = { x: 0, y: 0, lx: 0, ly: 0, seen: false, carry: 0 };
+    const sparks = [];
+    const LIFE = 1.0, MAX_SPARKS = 14;
+    function spawn(x, y) {
+      if (sparks.length >= MAX_SPARKS) return;
+      const ang = rand(0, 6.28), d = rand(14, 70);
+      sparks.push({
+        x: x + Math.cos(ang) * d, y: y + Math.sin(ang) * d,
+        vx: rand(-14, 14), vy: rand(6, 26),
+        rot: rand(0, 6.28), vr: rand(-1.2, 1.2),
+        s: rand(14, 26), c: COLORS[Math.floor(Math.random() * COLORS.length)],
+        age: 0, peak: rand(0.16, 0.26)
+      });
+    }
     function drawTrail(dt) {
       tctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       tctx.clearRect(0, 0, w, h);
-      mouse.fade += ((mouse.on ? 1 : 0) - mouse.fade) * Math.min(1, dt * 6);
-      if (mouse.fade < 0.01) return;
-      let tx = mouse.x, ty = mouse.y;
-      chain.forEach((l, i) => {
-        const px = l.x, py = l.y;
-        const f = 1 - Math.pow(1 - l.k, dt * 60);
-        l.x += (tx - l.x) * f; l.y += (ty - l.y) * f;
-        l.phase += dt * (2 + i * 0.3);
-        const speed = Math.hypot(l.x - px, l.y - py) / Math.max(dt, 0.001);
-        if (speed > 20) l.rot += (Math.atan2(l.y - py, l.x - px) + Math.PI / 2 - l.rot) * Math.min(1, dt * 4);
-        l.rot += Math.sin(l.phase) * dt * 0.8;
-        const k = l.s / 100, a = mouse.fade * lerp(0.95, 0.4, i / 8);
+      // spawn in proportion to how far the cursor travelled, so a still cursor makes nothing
+      const moved = Math.hypot(mouse.x - mouse.lx, mouse.y - mouse.ly);
+      mouse.lx = mouse.x; mouse.ly = mouse.y;
+      mouse.carry += moved;
+      while (mouse.seen && mouse.carry > 55) { mouse.carry -= 55; spawn(mouse.x, mouse.y); }
+      for (let i = sparks.length - 1; i >= 0; i--) {
+        const l = sparks[i];
+        l.age += dt;
+        if (l.age >= LIFE) { sparks.splice(i, 1); continue; }
+        l.x += l.vx * dt; l.y += l.vy * dt; l.rot += l.vr * dt;
+        const t = l.age / LIFE;
+        const a = l.peak * Math.sin(Math.PI * t);   // fade in, then out
+        const k = l.s / 100;
         tctx.save();
         tctx.translate(l.x, l.y);
         tctx.rotate(l.rot);
-        tctx.scale(k * (0.75 + 0.25 * Math.cos(l.phase * 1.3)), k);
+        tctx.scale(k, k);
         tctx.translate(-50, -50);
-        tctx.globalAlpha = a * 0.3; tctx.fillStyle = l.c; tctx.fill(outline);
+        tctx.globalAlpha = a * 0.4; tctx.fillStyle = l.c; tctx.fill(outline);
         tctx.globalAlpha = a; tctx.strokeStyle = l.c; tctx.lineJoin = 'round';
-        tctx.lineWidth = 1.6 / k; tctx.stroke(outline);
-        tctx.lineWidth = 1 / k; tctx.stroke(veins);
+        tctx.lineWidth = 1.4 / k; tctx.stroke(outline);
+        tctx.lineWidth = 0.9 / k; tctx.stroke(veins);
         tctx.restore();
-        tx = l.x; ty = l.y;
-      });
+      }
     }
 
     let last = performance.now();
@@ -1033,10 +1040,10 @@
       },
       // scrolling stirs the air: the faster the scroll, the harder the gust
       follow(x, y) {
-        if (!mouse.seen) { chain.forEach((l) => { l.x = x; l.y = y; }); mouse.seen = true; }
-        mouse.x = x; mouse.y = y; mouse.on = true;
+        if (!mouse.seen) { mouse.lx = x; mouse.ly = y; mouse.seen = true; }
+        mouse.x = x; mouse.y = y;
       },
-      unfollow() { mouse.on = false; },
+      unfollow() { mouse.seen = false; },
       gust(y) {
         const dy = y - lastY; lastY = y;
         wind = clamp(wind + dy * 1.6, -260, 260);

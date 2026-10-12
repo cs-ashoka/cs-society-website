@@ -311,7 +311,7 @@ Wrap it in `<Reveal>` (see `src/components/reveal.tsx`); `delayMs` staggers seve
 | File / folder | What it is | Status |
 |---|---|---|
 | `navbar/Navbar.tsx` | The top nav bar, with the mobile menu. **Used by `layout.tsx`.** | ✅ current |
-| `footer.tsx` | Footer with socials and hover-to-reveal credits. **Used by `layout.tsx`.** | ✅ current |
+| `footer.tsx` | Footer with socials and an always-visible credits bar. **Used by `layout.tsx`.** | ✅ current |
 | `reveal.tsx` | Scroll-triggered fade-in wrapper | ✅ current |
 | `under-construction.tsx` | "Coming soon" placeholder with a small game | ✅ current |
 | `cards/event-card.tsx` | Event thumbnail card on `/events` | older style |

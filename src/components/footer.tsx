@@ -4,7 +4,7 @@ type CreditPerson = { name: string; href?: string };
 
 const credits: { role: string; names: CreditPerson[] }[] = [
   { role: "Designed by", names: [{ name: "Parth Agarwal", href: "https://parthagarwal.vercel.app/" }] },
-  { role: "Maintained by", names: [{ name: "Savyamm" }, { name: "Anushka" }] },
+  { role: "Website team", names: [{ name: "Savyam" }, { name: "Ananya" }] },
 ];
 
 export function Footer() {
@@ -29,16 +29,13 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="group relative w-full h-7 hover:h-16 overflow-hidden border-t border-border bg-surface-container-low transition-all duration-300 flex items-center justify-center cursor-default">
-        <span className="absolute text-[10px] text-on-surface-variant/60 uppercase tracking-widest opacity-100 group-hover:opacity-0 transition-opacity duration-150">
-          Credits
-        </span>
+      <div className="w-full border-t border-border bg-surface-container-low">
         <div
-          className={`${jetbrainsMono.className} absolute opacity-0 group-hover:opacity-100 transition-opacity duration-200 delay-100 flex flex-col md:flex-row items-center gap-1 md:gap-6 text-[10px] md:text-xs text-on-surface-variant uppercase tracking-wide text-center px-4`}
+          className={`${jetbrainsMono.className} max-w-5xl mx-auto px-6 py-3 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-8 text-[10px] md:text-xs uppercase tracking-wide text-center`}
         >
           {credits.map((credit) => (
             <span key={credit.role} className="whitespace-nowrap">
-              <span className="text-on-surface-variant/60">{credit.role}</span>{" "}
+              <span className="text-on-surface-variant/60">{credit.role}:</span>{" "}
               {credit.names.map((person, i) => (
                 <span key={person.name} className="text-on-surface font-medium">
                   {person.href ? (

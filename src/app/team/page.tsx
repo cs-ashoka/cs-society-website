@@ -19,6 +19,16 @@ type CommitteeMember = {
 };
 
 // Placeholder roster — swap in the real Core Committee names/roles/social links here.
+
+const verticals = [
+  { name: "Events", blurb: "Workshops, socials, hackathons, and the CS Mixer." },
+  { name: "Development", blurb: "This website, internal tools, and member projects." },
+  { name: "Marketing", blurb: "Design, social media, and how the society shows up." },
+  { name: "Outreach & Logistics", blurb: "Speakers, partnerships, and making events actually happen." },
+  { name: "Finance", blurb: "Budgets, sponsorships, and keeping the society solvent." },
+  { name: "Broadcast", blurb: "Photo, video, and the stories we tell about the year." },
+];
+
 const coreCommittee: CommitteeMember[] = [
   { name: "Parth Agarwal", image: "/team/parth.jpg", role: "President", socials: { website: "https://parthagarwal.vercel.app/", instagram: "https://www.instagram.com/parthagarwal429/", email: "parth.agarwal_ug2024@ashoka.edu.in", linkedin: "https://www.linkedin.com/in/parth-agarwal1512/" } },
   { name: "Aaliya Ganguly", image: "/team/aaliya.jpg", role: "President", },
@@ -89,6 +99,26 @@ export default function TeamPage() {
           </p>
         </Reveal>
       </section>
+
+      {/* How we're organised */}
+      <section className="max-w-5xl mx-auto px-6 pb-16">
+        <Reveal className="flex items-center gap-4 mb-8">
+          <h2 className="text-3xl font-semibold text-on-surface">How we&apos;re organised</h2>
+          <div className="flex-grow h-px bg-border" />
+        </Reveal>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {verticals.map((v, i) => (
+            <Reveal key={v.name} delayMs={i * 80} className="group bg-surface border border-border rounded-xl p-6 card-glow">
+              <span className={`${jetbrainsMono.className} text-xs text-on-surface-variant block mb-3`}>
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">{v.name}</h3>
+              <p className="text-on-surface-variant text-sm">{v.blurb}</p>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
 
       {/* Core Committee */}
       <section className="max-w-5xl mx-auto px-6 pb-16">

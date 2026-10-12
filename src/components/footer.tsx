@@ -1,4 +1,14 @@
 import { jetbrainsMono } from "@/utils/fonts";
+import { MdEmail } from "react-icons/md";
+import { FaInstagram, FaXTwitter, FaGithub, FaLinkedin } from "react-icons/fa6";
+
+const socialLinks = [
+  { label: "Email", href: "mailto:cs.society@ashoka.edu.in", Icon: MdEmail },
+  { label: "Instagram", href: "https://www.instagram.com/cs.ashoka/", Icon: FaInstagram },
+  { label: "Twitter", href: "https://twitter.com/cs_ashoka", Icon: FaXTwitter },
+  { label: "GitHub", href: "https://github.com/cs-ashoka", Icon: FaGithub },
+  { label: "LinkedIn", href: "https://www.linkedin.com/company/cs-society-ashoka-universtiy/", Icon: FaLinkedin },
+];
 
 type CreditPerson = { name: string; href?: string };
 
@@ -18,12 +28,19 @@ export function Footer() {
           </p>
         </div>
         <div className={`${jetbrainsMono.className} flex flex-col items-end gap-2`}>
-          <div className="flex flex-col items-end gap-1 text-[10px] md:flex-row md:items-center md:gap-6 md:text-sm uppercase tracking-wide">
-            <a href="mailto:cs.society@ashoka.edu.in" className="text-on-surface-variant hover:text-primary transition-colors">Email</a>
-            <a href="https://www.instagram.com/cs.ashoka/" className="text-on-surface-variant hover:text-primary transition-colors">Instagram</a>
-            <a href="https://twitter.com/cs_ashoka" className="text-on-surface-variant hover:text-primary transition-colors">Twitter</a>
-            <a href="https://github.com/cs-ashoka" className="text-on-surface-variant hover:text-primary transition-colors">GitHub</a>
-            <a href="https://www.linkedin.com/company/cs-society-ashoka-universtiy/" className="text-on-surface-variant hover:text-primary transition-colors">LinkedIn</a>
+          <div className="flex items-center gap-4 text-lg md:text-2xl">
+            {socialLinks.map(({ label, href, Icon }) => (
+              <a
+                key={label}
+                href={href}
+                aria-label={label}
+                title={label}
+                {...(href.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                className="text-on-surface-variant hover:text-primary transition-colors"
+              >
+                <Icon />
+              </a>
+            ))}
           </div>
           <div className="text-[10px] md:text-xs text-on-surface-variant/60">v1.0.0</div>
         </div>

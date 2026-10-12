@@ -5,6 +5,7 @@ import { Reveal } from "@/components/reveal";
 import { FillButton } from "@/components/fill-button";
 import { getSortedPostsData } from "@/lib/event-posts";
 import { MdDescription } from "react-icons/md";
+import { HomeFaq } from "@/components/home-faq";
 
 export default function Home() {
   const recentEvents = getSortedPostsData().slice(0, 2);
@@ -34,7 +35,7 @@ export default function Home() {
         A student-run community for anyone into code, computers, and building weird (but cool!) stuff together.
       </p>
 
-        <a href="/about"
+        <a href="#basics"
         className={`${jetbrainsMono.className} inline-block bg-primary text-on-primary px-6 py-3 uppercase tracking-widest text-sm rounded hover:opacity-90 transition-opacity`}
       >
         Learn more
@@ -107,6 +108,11 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* The basics (formerly the About page) */}
+      <div className="border-t border-border">
+        <HomeFaq />
+      </div>
 
       {/* Society Highlights */}
       <section className="py-20 px-6 border-t border-border">

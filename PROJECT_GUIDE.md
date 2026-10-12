@@ -91,7 +91,7 @@ Next.js uses **file-based routing**: the folder structure inside `src/app/` *is*
 
 ```
 src/app/page.tsx                        →  /                (home)
-src/app/about/page.tsx                  →  /about
+(removed: /about now redirects to /)
 src/app/team/page.tsx                   →  /team
 src/app/events/page.tsx                 →  /events
 src/app/events/[slug]/page.tsx          →  /events/anything  (see below)

@@ -15,7 +15,6 @@ const OpenMenu: React.FC = () => {
         <div className={`${poppins.className} m-4`}>
             <CloseMenu />
             <ul className="p-4">
-            <NavItem href="/about">About</NavItem>
             <NavItem href="/events">Events</NavItem>
             <NavItem href="/resources">Resources</NavItem>
             <NavItem href="/manifesto">Our Manifesto</NavItem>

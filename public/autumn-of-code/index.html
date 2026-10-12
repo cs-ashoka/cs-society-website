@@ -930,7 +930,10 @@
       const b = el('button');
       b.type = 'button';
       b.style.setProperty('--c', e.color);
-      const d = el('span', 'd', e.end ? `${e.a.getDate()}–${e.b.getDate()} ${MONTHS[e.b.getMonth()].slice(0, 3)}` : `${e.a.getDate()} ${MONTHS[e.a.getMonth()].slice(0, 3)}`);
+      const mon = (x) => MONTHS[x.getMonth()].slice(0, 3);
+      const d = el('span', 'd', !e.end ? `${e.a.getDate()} ${mon(e.a)}`
+        : e.a.getMonth() === e.b.getMonth() ? `${e.a.getDate()}–${e.b.getDate()} ${mon(e.b)}`
+        : `${e.a.getDate()} ${mon(e.a)} – ${e.b.getDate()} ${mon(e.b)}`);
       const n = el('span', 'n', e.name);
       n.append(el('span', 't', e.tag || 'Event'));
       b.append(d, n);

@@ -1,37 +1,80 @@
-import Link from "next/link";
-import { jetbrainsMono } from "@/utils/fonts";
-import { Reveal } from "@/components/reveal";
-import { PageHeader } from "@/components/page-header";
-import { MdSchool, MdWork, MdDescription, MdArrowForward } from "react-icons/md";
+"use client";
 
-export const metadata = { title: "Resources | CS Society @ Ashoka" };
+import { jetbrainsMono } from "@/utils/fonts";
+import Link from "next/link";
+import { MdArrowForward } from "react-icons/md";
 
 const resources = [
-  { title: "Learning CS", desc: "Guides and notes from programming basics to ML, web dev, and competitive programming.", href: "/learningcs", Icon: MdSchool },
-  { title: "Internships", desc: "Where to look, how to apply, and what past students did.", href: "/internships", Icon: MdWork },
-  { title: "Ashoka starter pack", desc: "Everything a new CS student should know, in one PDF.", href: "/ashoka-starter-pack.pdf", Icon: MdDescription },
+  {
+    href: "/learningcs",
+    title: "Learning CS",
+    description:
+      "learn more abt AI/ML, web dev, competitive programming and more",
+  },
+  {
+    href: "/internships",
+    title: "Internships",
+    description:
+      "placeholder text",
+  },
 ];
+
 
 export default function Resources() {
   return (
     <main className="min-h-screen bg-background">
-      <PageHeader eyebrow="Resources // Toolkit" title="Resources">
-        What does the Computer Science Society have for you? Start here.
-      </PageHeader>
-      <section className="max-w-5xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-3 gap-6">
-        {resources.map(({ title, desc, href, Icon }, i) => (
-          <Reveal key={title} delayMs={i * 100} className="h-full">
-            <Link href={href} className="group flex flex-col h-full bg-surface border border-border rounded-xl p-6 card-glow">
-              <Icon className="text-3xl text-primary mb-6" />
-              <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">{title}</h3>
-              <p className="text-on-surface-variant text-sm mb-6 flex-grow">{desc}</p>
-              <span className={`${jetbrainsMono.className} text-xs uppercase tracking-widest flex items-center gap-2 text-on-surface group-hover:text-primary transition-colors`}>
-                Explore <MdArrowForward className="group-hover:translate-x-1 transition-transform" />
-              </span>
-            </Link>
-          </Reveal>
+      <section className="relative py-16 px-6 overflow-hidden bg-hero-tint border-b border-border">
+        <div
+          className="absolute inset-0 opacity-40 pointer-events-none"
+          style={{
+            backgroundImage:
+              "radial-gradient(rgb(var(--c-border)) 1px, transparent 1px)",
+            backgroundSize: "32px 32px",
+          }}
+        />
+
+        <div className="max-w-5xl mx-auto relative z-10">
+          <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-on-surface mb-4">Resources</h1>
+          
+          <span
+            className={`${jetbrainsMono.className} text-primary uppercase tracking-[0.2em] text-sm block mb-4`}
+          >
+            What resources does CS Soc have for you? </span>
+
+        </div>
+
+
+  
+      </section>
+
+      <section className="max-w-5xl mx-auto px-6 py-16 flex flex-col gap-6">
+        {resources.map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            className="group block bg-surface border border-primary/30 rounded-xl p-6 md:p-8 card-glow"
+          >
+            
+            <div className="flex items-center justify-between gap-6">
+              <div>
+                <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-on-surface mb-2 group-hover:text-primary transition-colors">
+                  {item.title}
+                </h2>
+                <p className="text-on-surface-variant text-sm md:text-base max-w-2xl">
+                  {item.description}
+                </p>
+              </div>
+
+
+              <MdArrowForward className="text-primary text-3xl md:text-4xl flex-shrink-0 transition-transform group-hover:translate-x-1" />
+            </div>
+          </Link>
         ))}
       </section>
+
+
+      
     </main>
   );
 }
+

@@ -1,0 +1,677 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Autumn of Code · CS Society, Ashoka University</title>
+<meta name="description" content="Autumn of Code: a month-long celebration of open source by the CS Society at Ashoka University.">
+<meta name="theme-color" content="#E7C293">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Silkscreen&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="assets/hand.png">
+<style>
+  :root {
+    /* Palette */
+    --oak: #8B5A2B;          /* Autumn Oak */
+    --maple: #9B2226;        /* Crimson Maple */
+    --ginkgo: #CA8A04;       /* Golden Ginkgo */
+    --pine: #6C7B95;         /* Misty Pine */
+    --straw: #D4A373;        /* Wheat Straw */
+
+    /* Derived roles */
+    --paper: #EDCB9F;        /* straw, lifted toward the logo's ground */
+    --paper-light: #F6DDBA;  /* where the light falls */
+    --paper-deep: #D9AE7C;   /* the sheet's edges, away from the light */
+    --ink: var(--maple);
+    --ink-soft: #7A3A22;     /* maple pulled toward oak, for quieter text */
+    --pine-ink: #46546D;     /* pine darkened for legible type on paper */
+    --bark: #3B2414;         /* oak at night: shadows and the footer ground */
+
+    --serif: "Libre Caslon Text", "Iowan Old Style", Georgia, serif;
+    --pixel: "Silkscreen", ui-monospace, monospace;
+    --ease-out: cubic-bezier(.16, 1, .3, 1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scrollbar-color: var(--maple) var(--paper-deep); scrollbar-width: thin; }
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: var(--paper-deep); }
+  ::-webkit-scrollbar-thumb { background: var(--maple); border: 2px solid var(--paper-deep); }
+  ::selection { background: var(--maple); color: var(--paper); }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ---------- Depth: light, forest, leaves, lens ---------- */
+
+  /* The lit sheet: warm light from above, the edges falling away into shade */
+  .light {
+    position: fixed; inset: 0; z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(120% 85% at 50% 30%, var(--paper-light) 0%, var(--paper) 45%, var(--paper-deep) 100%);
+  }
+
+  /* A misty wood behind the paper, out of focus like the background of a photograph */
+  .forest {
+    position: fixed; inset: -40px; z-index: 0;
+    width: calc(100% + 80px); height: calc(100% + 80px);
+    pointer-events: none;
+    will-change: transform;
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 38%, rgba(0,0,0,.25) 80%, transparent 100%);
+            mask-image: linear-gradient(180deg, #000 0%, #000 38%, rgba(0,0,0,.25) 80%, transparent 100%);
+  }
+  .forest.far  { filter: blur(11px); opacity: .32; }
+  .forest.near { filter: blur(6px); opacity: .42; }
+  .canopy { filter: blur(34px); opacity: .55; }
+
+  .leaves {
+    position: fixed; inset: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+  /* leaves passing right in front of the lens */
+  .leaves.front {
+    z-index: 30;
+    filter: blur(10px);
+    opacity: .5;
+    will-change: transform;
+  }
+
+  /* Paper tooth and a lens vignette, above everything, never intercepting input */
+  body::before {
+    content: "";
+    position: fixed; inset: 0; z-index: 49;
+    pointer-events: none;
+    background: radial-gradient(130% 100% at 50% 42%, transparent 55%, rgba(59, 36, 20, .26) 100%);
+  }
+  body::after {
+    content: "";
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 50;
+    opacity: .34;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .55  0 0 0 0 .35  0 0 0 0 .17  0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ---------- Top bar ---------- */
+  .bar {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 40;
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: clamp(16px, 2.4vw, 32px) clamp(16px, 3.2vw, 48px);
+    font-size: clamp(.8rem, .9vw, .95rem);
+    color: var(--ink-soft);
+    pointer-events: none;
+    transition: opacity .4s;
+  }
+  .bar.is-gone { opacity: 0; }
+  .bar.is-gone .home { pointer-events: none; }
+  .bar .home {
+    pointer-events: auto;
+    color: inherit;
+    text-decoration: none;
+  }
+  .bar .home:hover b { text-decoration: underline; text-underline-offset: .25em; text-decoration-color: var(--ginkgo); }
+  .bar .home:focus-visible { outline: 2px solid var(--maple); outline-offset: 4px; }
+  .bar b { font-weight: 700; color: var(--ink); letter-spacing: .01em; }
+  .bar .sep { margin: 0 .5em; opacity: .5; }
+  .cue {
+    display: inline-flex; align-items: center; gap: .6em;
+    font-family: var(--pixel);
+    font-size: .78em;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--pine-ink);
+    opacity: 0;
+    transition: opacity .8s var(--ease-out);
+  }
+  .cue.is-on { opacity: 1; }
+  .cue svg { width: 10px; height: 12px; shape-rendering: crispEdges; fill: currentColor; }
+  .cue.is-on svg { animation: nudge 1.6s steps(2, jump-none) infinite; }
+  @keyframes nudge { 50% { transform: translateY(3px); } }
+
+  /* ---------- Stage ---------- */
+  .stage { position: relative; height: 290vh; height: 290svh; z-index: 1; }
+  .pin {
+    position: sticky; top: 0;
+    height: 100vh; height: 100svh;
+    overflow: hidden;
+  }
+  .actor {
+    position: absolute; top: 0; left: 0;
+    will-change: transform;
+  }
+  .hand {
+    display: block;
+    height: auto;
+    user-select: none; -webkit-user-drag: none;
+    /* engravings trail off rather than end: feather the arm so its cut edge never shows */
+    -webkit-mask-image: linear-gradient(90deg, #000 72%, transparent 98%);
+            mask-image: linear-gradient(90deg, #000 72%, transparent 98%);
+  }
+  /* the hand hovers a little above the sheet and casts onto it */
+  .hand-wrap {
+    filter: drop-shadow(14px 30px 22px rgba(59, 36, 20, .30)) drop-shadow(2px 4px 3px rgba(59, 36, 20, .18));
+    transform-origin: 0% 39%;
+    z-index: 3;
+  }
+  .cursor {
+    display: block;
+    shape-rendering: crispEdges;
+    overflow: visible;
+    filter: drop-shadow(8px 16px 12px rgba(59, 36, 20, .28)) drop-shadow(1px 2px 1px rgba(59, 36, 20, .2));
+    z-index: 4;
+  }
+  .cursor-ink { fill: var(--maple); }
+  .cursor-fill { fill: var(--paper-light); }
+
+  .spark {
+    position: absolute; left: 0; top: 0;
+    background: var(--ginkgo);
+    z-index: 5;
+  }
+
+  /* ---------- Wordmark ---------- */
+  .mark {
+    position: absolute; top: 0; left: 0;
+    margin: 0;
+    font-weight: 700;
+    line-height: .92;
+    letter-spacing: -.02em;
+    text-align: right;
+    color: var(--maple);
+    /* pressed into the sheet: a lit lower lip and a soft fall-off */
+    text-shadow: 0 1px 0 rgba(255, 236, 210, .55), 0 16px 36px rgba(59, 36, 20, .2);
+    transform-origin: 50% 50%;
+    z-index: 1;
+    opacity: 0;
+  }
+  .mark span { display: block; }
+  .mark em {
+    font-weight: 400;
+    font-style: italic;
+    letter-spacing: -.01em;
+    margin-right: .06em;
+  }
+  .tag {
+    position: absolute; left: 50%; top: 0;
+    width: min(34rem, calc(100vw - 32px));
+    margin: 0;
+    transform: translateX(-50%);
+    text-align: center;
+    font-size: clamp(1rem, 1.25vw, 1.2rem);
+    line-height: 1.55;
+    color: var(--ink-soft);
+    text-wrap: balance;
+    opacity: 0;
+    z-index: 1;
+  }
+  .tag .px {
+    display: block;
+    margin-top: 1.4em;
+    font-family: var(--pixel);
+    font-size: .72em;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--pine-ink);
+  }
+
+  /* ---------- Close ---------- */
+  .close {
+    position: relative; z-index: 2;
+    background: var(--bark);
+    color: var(--straw);
+    padding: clamp(56px, 9vw, 120px) clamp(16px, 3.2vw, 48px) clamp(32px, 4vw, 48px);
+    box-shadow: 0 -30px 60px rgba(59, 36, 20, .25);
+  }
+  .close-inner {
+    max-width: 72rem; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr auto; gap: 40px 24px; align-items: end;
+  }
+  .close h2 {
+    margin: 0;
+    font-size: clamp(1.9rem, 4.4vw, 3.6rem);
+    line-height: 1.05;
+    letter-spacing: -.015em;
+    font-weight: 400;
+    color: #F1D6B2;
+    text-wrap: balance;
+  }
+  .close h2 em { color: var(--ginkgo); }
+  .close a {
+    font-family: var(--pixel);
+    font-size: .8rem;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: #F1D6B2;
+    text-decoration: underline;
+    text-decoration-color: var(--ginkgo);
+    text-underline-offset: .45em;
+    text-decoration-thickness: 2px;
+    transition: color .2s;
+  }
+  .close a:hover { color: var(--ginkgo); }
+  .close a:focus-visible { outline: 2px solid var(--ginkgo); outline-offset: 6px; }
+  .close small {
+    grid-column: 1 / -1;
+    padding-top: 24px;
+    border-top: 1px solid rgba(212, 163, 115, .25);
+    font-size: .85rem;
+    color: #C9A27A;
+  }
+  @media (max-width: 640px) {
+    .close-inner { grid-template-columns: 1fr; }
+    .bar .full { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="light" aria-hidden="true"></div>
+<svg class="forest far" aria-hidden="true"></svg>
+<canvas class="leaves back" aria-hidden="true"></canvas>
+<svg class="forest near" aria-hidden="true"></svg>
+<canvas class="leaves front" aria-hidden="true"></canvas>
+
+<header class="bar">
+  <a class="home" href="/"><b>CS Society</b><span class="sep full">·</span><span class="full">Ashoka University</span></a>
+  <span class="cue" aria-hidden="true">
+    Scroll
+    <svg viewBox="0 0 5 6"><path d="M2 0h1v4H2zM0 2h1v1H0zM4 2h1v1H4zM1 3h1v1H1zM3 3h1v1H3zM2 4h1v2H2z"/></svg>
+  </span>
+</header>
+
+<main>
+  <section class="stage" aria-labelledby="title">
+    <div class="pin">
+      <svg class="actor cursor" viewBox="0 0 20 16" aria-hidden="true">
+        <path class="cursor-fill" d="M11 1h1v1h-1zM9 2h3v1h-3zM8 3h3v1h-3zM5 4h3v1h-3zM3 5h16v1h-16zM1 6h18v1h-18zM1 7h10v1h-10zM1 8h13v1h-13zM1 9h13v1h-13zM1 10h10v1h-10zM1 11h12v1h-12zM1 12h9v1h-9zM3 13h9v1h-9zM5 14h6v1h-6z"/>
+        <path class="cursor-ink" d="M10 0h3v1h-3zM8 1h3v1h-3zM12 1h1v1h-1zM7 2h2v1h-2zM12 2h1v1h-1zM5 3h3v1h-3zM11 3h2v1h-2zM2 4h3v1h-3zM8 4h11v1h-11zM0 5h3v1h-3zM19 5h1v1h-1zM0 6h1v1h-1zM19 6h1v1h-1zM0 7h1v1h-1zM11 7h9v1h-9zM0 8h1v1h-1zM14 8h1v1h-1zM0 9h1v1h-1zM14 9h1v1h-1zM0 10h1v1h-1zM11 10h4v1h-4zM0 11h1v1h-1zM13 11h1v1h-1zM0 12h1v1h-1zM10 12h4v1h-4zM0 13h3v1h-3zM12 13h1v1h-1zM2 14h3v1h-3zM11 14h1v1h-1zM4 15h8v1h-8z"/>
+      </svg>
+
+      <div class="actor hand-wrap"><img class="hand" src="assets/hand.png" width="919" height="576" alt="" draggable="false"></div>
+
+      <h1 class="mark" id="title"><span>Autumn</span><span><em>of</em> code</span></h1>
+
+      <p class="tag">
+        A month-long celebration of open source, built for campus by the CS&nbsp;Society at Ashoka&nbsp;University.
+        <span class="px">More of the season soon</span>
+      </p>
+    </div>
+  </section>
+
+  <footer class="close">
+    <div class="close-inner">
+      <h2>Bring a laptop, a bug you hate, <em>and a friend.</em></h2>
+      <a href="mailto:cs.society@ashoka.edu.in">cs.society@ashoka.edu.in</a>
+      <small>Autumn of Code is a CS Society event at Ashoka University, first run in 2023 with the Women in Computing Society.</small>
+    </div>
+  </footer>
+</main>
+
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $ = (s) => document.querySelector(s);
+  const stage = $('.stage'), pin = $('.pin');
+  const hand = $('.hand'), handWrap = $('.hand-wrap'), cur = $('.cursor'), mark = $('.mark'), tag = $('.tag');
+  const cue = $('.cue'), bar = $('.bar');
+  const forestFar = $('.forest.far'), forestNear = $('.forest.near');
+  const frontCanvas = $('.leaves.front');
+
+  // Hand cut-out geometry (assets/hand.png is 919 x 576; fingertip sits at 0.9% x, 39% y)
+  const HAND_RATIO = 576 / 919, TIP_X = 0.0087, TIP_Y = 0.39;
+  // Pixel cursor is 20 x 16 cells; the index finger's centre line is row 6 of 16
+  const CUR_COLS = 20, CUR_ROWS = 16, CUR_TIP_Y = 6 / 16;
+
+  // Entrance (ms): one unbroken glide from each side to the centre
+  const T_TOTAL = 3400;
+
+  const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const glide = (t) => 1 - Math.pow(1 - t, 3);   // quick while off-screen, a long gentle landing
+  const easeInOut = (t) => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  const rand = (a, b) => a + Math.random() * (b - a);
+
+  let L = null;               // layout
+  let clock = reduce ? T_TOTAL : 0;   // entrance time in ms
+  let exitP = 0;              // scroll progress 0..1
+  let arrived = reduce;
+  let now = 0;
+  const pointer = { x: 0, y: 0, tx: 0, ty: 0 };   // smoothed parallax input, -1..1
+
+  // ---------- Layout ----------
+  function layout() {
+    const W = pin.clientWidth, H = pin.clientHeight;
+    const portrait = H > W * 1.05;
+    const handW = Math.min(1100, Math.max(270, W * (portrait ? 0.95 : 0.58)));
+    const handH = handW * HAND_RATIO;
+    const unit = Math.max(3, Math.round(handW * 0.2 / CUR_COLS));
+    const curW = unit * CUR_COLS, curH = unit * CUR_ROWS;
+    const gap = Math.max(14, handW * 0.035);
+    const meetX = W * (portrait ? 0.5 : 0.45);
+    const lineY = H * 0.4;
+
+    hand.style.width = handW + 'px';
+    cur.style.width = curW + 'px';
+    cur.style.height = curH + 'px';
+
+    // Wordmark, set under the cursor and left of the fingers, as in the logo
+    const fs = Math.min(96, Math.max(40, handW * 0.15));
+    mark.style.fontSize = fs + 'px';
+    const mw = mark.offsetWidth, mh = mark.offsetHeight;
+    const markRight = Math.min(meetX + handW * 0.28, W - 16);
+    const markX = Math.max(16, markRight - mw);
+    const markY = lineY + curH * (1 - CUR_TIP_Y) + unit * 4;
+
+    // Where the wordmark settles once the hand and cursor have gone
+    const scaleTo = Math.min(1.6, (W - 32) / mw, (H * 0.42) / mh);
+
+    const handX = meetX + gap / 2 - handW * TIP_X;
+    const curX = meetX - gap / 2 - curW;
+    L = {
+      W, H, portrait, handW, handH, unit, curW, curH, gap, meetX, lineY,
+      handX, handY: lineY - handH * TIP_Y,
+      curX, curY: lineY - curH * CUR_TIP_Y,
+      offHand: W - handX + 60,
+      offCur: curX + curW + 60,
+      markX, markY, mw, mh, scaleTo, restCX: W / 2, restCY: H * 0.44
+    };
+    buildForest();
+    render();
+  }
+
+  // Distance of each actor from its resting place at entrance time t (0 = touching distance)
+  function approach(t, off) {
+    return off * (1 - glide(clamp(t / T_TOTAL)));
+  }
+
+  function render() {
+    if (!L) return;
+    const { H, unit } = L;
+    const px = pointer.x, py = pointer.y;
+
+    // Retreat on scroll: each goes back out the side it came in from
+    const x = easeInOut(clamp(exitP / 0.6));
+    const handD = approach(clock, L.offHand) + x * L.offHand;
+    const curD = approach(clock, L.offCur) + x * L.offCur;
+    const drift = arrived && !reduce ? Math.sin(now / 900) * 3 : 0;
+
+    // parallax: the actors sit on the middle plane
+    const ax = -px * 14, ay = -py * 9;
+    handWrap.style.transform =
+      `translate3d(${L.handX + handD + ax}px, ${L.handY + drift + ay - x * H * 0.04}px, 0) rotate(${x * 3}deg)`;
+    const cx = L.curX - curD;
+    cur.style.transform = `translate3d(${cx + ax}px, ${L.curY + ay}px, 0)`;
+
+    if (reduce) handWrap.style.opacity = cur.style.opacity = 1 - clamp(exitP / 0.35);
+
+    // Wordmark: appears on arrival, then takes the centre as the stage clears
+    const m = easeInOut(clamp((exitP - 0.2) / 0.55));
+    const fromCX = L.markX + L.mw / 2, fromCY = L.markY + L.mh / 2;
+    const cxM = lerp(fromCX, L.restCX, m) - px * 8;
+    const cyM = lerp(fromCY, L.restCY, m) - py * 5;
+    const s = lerp(1, L.scaleTo, m);
+    mark.style.transform = `translate3d(${cxM - L.mw / 2}px, ${cyM - L.mh / 2}px, 0) scale(${s})`;
+
+    const tagT = clamp((exitP - 0.62) / 0.22);
+    tag.style.opacity = tagT;
+    tag.style.top = (L.restCY + (L.mh * L.scaleTo) / 2 + 28 + (1 - tagT) * 16) + 'px';
+
+    // the deeper the plane, the less it moves
+    const sy = exitP * H;
+    forestFar.style.transform = `translate3d(${-px * 6}px, ${-py * 4 - sy * 0.04}px, 0)`;
+    forestNear.style.transform = `translate3d(${-px * 22}px, ${-py * 10 - sy * 0.12}px, 0)`;
+    frontCanvas.style.transform = `translate3d(${-px * 48}px, ${-py * 28 - sy * 0.35}px, 0)`;
+
+    cue.classList.toggle('is-on', arrived && exitP < 0.06);
+  }
+
+  // ---------- The wood behind the paper ----------
+  function seeded(seed) {
+    return () => {
+      seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+      let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+  function trunk(r, cx, w, H, color, withLimbs = false) {
+    const lean = (r() - 0.5) * w * 1.6;
+    const top = w * 0.42;
+    let d = `M${cx - w / 2} ${H + 40} C${cx - w * 0.45} ${H * 0.6} ${cx + lean - top} ${H * 0.3} ${cx + lean - top / 2} -40 ` +
+            `L${cx + lean + top / 2} -40 C${cx + lean + top} ${H * 0.3} ${cx + w * 0.45} ${H * 0.6} ${cx + w / 2} ${H + 40}Z`;
+    // a few limbs reaching up and out
+    const limbs = withLimbs ? 1 + Math.floor(r() * 2) : 0;
+    for (let i = 0; i < limbs; i++) {
+      const y = H * (0.06 + r() * 0.42);
+      const side = r() < 0.5 ? -1 : 1;
+      const bx = cx + lean * (1 - y / H) + side * w * 0.25;
+      const len = w * (1.6 + r() * 2.2);
+      const ex = bx + side * len, ey = y - len * (0.45 + r() * 0.5);
+      const bw = w * 0.18;
+      d += `M${bx} ${y + bw} Q${bx + side * len * 0.5} ${y - len * 0.05} ${ex} ${ey} Q${bx + side * len * 0.45} ${y - len * 0.2} ${bx} ${y - bw}Z`;
+    }
+    return `<path d="${d}" fill="${color}"/>`;
+  }
+  function buildForest() {
+    const W = L.W + 80, H = L.H + 80;
+    for (const svg of [forestFar, forestNear]) svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+
+    // far: thin misty trunks across the whole width, and the canopy glowing above them
+    let r = seeded(7), far = '';
+    const nFar = Math.round(clamp(W / 160, 4, 10));
+    for (let i = 0; i < nFar; i++) {
+      const cx = (i + 0.2 + r() * 0.6) / nFar * W;
+      far += trunk(r, cx, W * (0.008 + r() * 0.012), H, r() < 0.5 ? '#6C7B95' : '#7D7A86');
+    }
+    let canopy = '';
+    const leafTones = ['#9B2226', '#CA8A04', '#B4532A', '#8B5A2B', '#C2410C'];
+    for (let i = 0; i < 16; i++) {
+      canopy += `<ellipse cx="${r() * W}" cy="${-H * 0.04 + r() * H * 0.2}" rx="${W * (0.05 + r() * 0.08)}" ry="${H * (0.04 + r() * 0.07)}" fill="${leafTones[i % leafTones.length]}" opacity="${0.35 + r() * 0.35}"/>`;
+    }
+    forestFar.innerHTML = `<g class="canopy">${canopy}</g>${far}`;
+
+    // near: a few heavy oak trunks framing the edges, nearer the lens
+    r = seeded(23);
+    const xs = L.portrait ? [0.03, 0.97] : [0.03, 0.1, 0.975];
+    let near = '';
+    for (const fx of xs) near += trunk(r, fx * W, W * (L.portrait ? 0.07 : 0.03 + r() * 0.02), H, r() < 0.6 ? '#5A3A20' : '#6E4526', true);
+    forestNear.innerHTML = near;
+  }
+
+  // ---------- The spark when they meet ----------
+  function spark() {
+    const u = L.unit;
+    const cx = L.meetX - pointer.x * 14, cy = L.lineY - pointer.y * 9;
+    const dirs = [[1,0],[-1,0],[0,1],[0,-1],[1,1],[-1,-1],[1,-1],[-1,1]];
+    dirs.forEach(([dx, dy], i) => {
+      const p = document.createElement('i');
+      p.className = 'spark';
+      p.style.width = p.style.height = u + 'px';
+      pin.appendChild(p);
+      const r = u * (i < 4 ? 5 : 3.5);
+      p.animate([
+        { transform: `translate3d(${cx - u/2}px, ${cy - u/2}px, 0)`, opacity: 1 },
+        { transform: `translate3d(${cx - u/2 + dx * r}px, ${cy - u/2 + dy * r}px, 0)`, opacity: 0 }
+      ], { duration: 520, easing: 'steps(4, end)', fill: 'forwards' }).onfinish = () => p.remove();
+    });
+  }
+
+  // ---------- Main loop ----------
+  function play() {
+    if (reduce) {
+      mark.style.opacity = 1;
+      render();
+      return;
+    }
+    const start = performance.now() + 300;
+    function tick() {
+      now = performance.now();
+      clock = clamp(now - start, 0, T_TOTAL);
+
+      if (clock >= T_TOTAL && !arrived) {
+        arrived = true;
+        spark();
+        mark.animate(
+          [{ opacity: 0, filter: 'blur(8px)' }, { opacity: 1, filter: 'blur(0)' }],
+          { duration: 1100, easing: 'cubic-bezier(.16,1,.3,1)', fill: 'forwards' }
+        );
+      }
+      pointer.x += (pointer.tx - pointer.x) * 0.06;
+      pointer.y += (pointer.ty - pointer.y) * 0.06;
+      render();
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  // ---------- Input ----------
+  function onScroll() {
+    const total = stage.offsetHeight - pin.clientHeight;
+    exitP = clamp(-stage.getBoundingClientRect().top / total);
+    if (reduce) render();
+    bar.classList.toggle('is-gone', stage.getBoundingClientRect().bottom < 120);
+    leaves.gust(window.scrollY);
+  }
+  if (!reduce) {
+    addEventListener('pointermove', (e) => {
+      if (e.pointerType !== 'mouse') return;
+      pointer.tx = (e.clientX / innerWidth) * 2 - 1;
+      pointer.ty = (e.clientY / innerHeight) * 2 - 1;
+    }, { passive: true });
+  }
+
+  // ---------- Falling leaves (engraved, in the palette, at three depths) ----------
+  const leaves = (() => {
+    const back = $('.leaves.back'), front = frontCanvas;
+    const bctx = back.getContext('2d'), fctx = front.getContext('2d');
+    const COLORS = ['#9B2226', '#8B5A2B', '#CA8A04', '#B4532A', '#9B2226'];
+    // a maple leaf in a 100 x 100 box, base of the blade at (50, 74)
+    const half = [[50,74],[60,76],[66,86],[69,73],[82,75],[78,66],[95,52],[84,49],[88,39],[76,41],[73,32],[66,43],[67,22],[60,28],[57,16],[53,19],[50,4]];
+    const outline = new Path2D();
+    half.forEach(([x, y], i) => i ? outline.lineTo(x, y) : outline.moveTo(x, y));
+    for (let i = half.length - 2; i >= 0; i--) outline.lineTo(100 - half[i][0], half[i][1]);
+    outline.closePath();
+    const veins = new Path2D('M50 96L50 8M50 66L88 50M50 66L12 50M50 72L64 84M50 72L36 84M50 40L64 28M50 40L36 28');
+
+    let list = [], near = [], dpr = 1, w = 0, h = 0, lastY = window.scrollY, wind = 0;
+
+    function size() {
+      dpr = Math.min(2, window.devicePixelRatio || 1);
+      w = innerWidth; h = innerHeight;
+      for (const c of [back, front]) { c.width = w * dpr; c.height = h * dpr; }
+      const n = Math.round(clamp(w / 70, 8, 22));
+      while (list.length < n) list.push(make(true));
+      list.length = n;
+      while (near.length < 3) near.push(make(true, true));
+    }
+    function make(anywhere, isNear = false) {
+      // z: 0 = deep in the wood, 1 = right by the paper
+      const z = isNear ? 1 : Math.random();
+      return {
+        z, near: isNear,
+        x: rand(-40, w + 40),
+        y: anywhere ? rand(-h * 0.2, h) : rand(-160, -40),
+        s: isNear ? rand(140, 220) : lerp(12, 40, z),
+        vy: isNear ? rand(30, 45) : lerp(9, 30, z),
+        sway: rand(0.4, 1.1),
+        phase: rand(0, Math.PI * 2),
+        rot: rand(0, Math.PI * 2),
+        vr: rand(-0.6, 0.6),
+        flip: rand(0.6, 1.6),
+        c: COLORS[Math.floor(Math.random() * COLORS.length)],
+        a: isNear ? rand(0.55, 0.8) : lerp(0.25, 0.8, z)
+      };
+    }
+    function draw(ctx, l, dt) {
+      l.phase += dt * l.sway;
+      l.y += (l.vy + Math.abs(wind) * 0.4 * (0.4 + l.z)) * dt;
+      l.x += (Math.sin(l.phase) * 22 + wind * (0.3 + l.z)) * dt;
+      l.rot += (l.vr + wind * 0.004) * dt;
+      const m = l.s;
+      if (l.y > h + m || l.x < -m * 2 || l.x > w + m * 2) {
+        const fromSide = l.x < -m * 2 ? w + m : l.x > w + m * 2 ? -m : null;
+        Object.assign(l, make(false, l.near));
+        if (fromSide !== null) { l.x = fromSide; l.y = rand(0, h * 0.6); }
+      }
+      const k = l.s / 100;
+      ctx.save();
+      ctx.translate(l.x, l.y);
+      ctx.rotate(l.rot);
+      ctx.scale(k * Math.cos(l.phase * l.flip), k);
+      ctx.translate(-50, -50);
+      if (l.near) {
+        ctx.globalAlpha = l.a;
+        ctx.fillStyle = l.c;
+        ctx.fill(outline);
+      } else {
+        ctx.globalAlpha = l.a * 0.22;
+        ctx.fillStyle = l.c;
+        ctx.fill(outline);
+        ctx.globalAlpha = l.a;
+        ctx.strokeStyle = l.c;
+        ctx.lineWidth = 1.4 / k;
+        ctx.lineJoin = 'round';
+        ctx.stroke(outline);
+        ctx.lineWidth = 0.9 / k;
+        ctx.stroke(veins);
+      }
+      ctx.restore();
+    }
+    let last = performance.now();
+    function frame(t) {
+      const dt = Math.min(0.05, (t - last) / 1000); last = t;
+      wind *= 0.94;
+      for (const [ctx] of [[bctx], [fctx]]) {
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.clearRect(0, 0, w, h);
+      }
+      for (const l of list) draw(bctx, l, dt);
+      for (const l of near) draw(fctx, l, dt);
+      requestAnimationFrame(frame);
+    }
+    return {
+      start() {
+        if (reduce) { back.remove(); front.remove(); return; }
+        size();
+        addEventListener('resize', size);
+        last = performance.now();
+        requestAnimationFrame(frame);
+      },
+      // scrolling stirs the air: the faster the scroll, the harder the gust
+      gust(y) {
+        const dy = y - lastY; lastY = y;
+        wind = clamp(wind + dy * 1.6, -260, 260);
+      }
+    };
+  })();
+
+  // ---------- Boot ----------
+  const ready = Promise.all([
+    document.fonts ? document.fonts.ready : Promise.resolve(),
+    hand.complete ? Promise.resolve() : new Promise((r) => { hand.onload = r; hand.onerror = r; })
+  ]);
+  layout();   // place everything off-stage immediately so nothing flashes at rest
+  Promise.race([ready, new Promise((r) => setTimeout(r, 1800))]).then(() => {
+    layout();
+    leaves.start();
+    play();
+  });
+  addEventListener('resize', layout);
+  addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+</script>
+</body>
+</html>

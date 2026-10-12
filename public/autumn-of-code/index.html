@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#E7C293">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Silkscreen&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Archivo:wght@700;800&family=Caveat:wght@500;600;700&family=Permanent+Marker&family=Silkscreen&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="assets/hand.png">
 <style>
   :root {
@@ -271,125 +271,311 @@
   }
 
   /* ---------- Calendar ---------- */
+  /* The section is a folded brochure sheet: a botanical border drawn in maple ink around it,
+     and the season pinned to it as a printed wall calendar someone has marked up by hand. */
   .cal {
+    --fr: clamp(24px, 2.6vw, 38px);        /* border thickness */
+    --fr-in: clamp(8px, 1.4vw, 20px);      /* border inset from the section edge */
+    --card: #FBF2E6;                       /* the calendar's printed stock */
+    --line: #2A1A0F;                       /* printed grid ink */
+    --marker: #BE3324;                     /* red felt-tip */
+    --hand: "Caveat", "Segoe Print", cursive;
+    --marker-font: "Permanent Marker", "Caveat", cursive;
+    --grot: "Archivo", "Helvetica Neue", Arial, sans-serif;
     position: relative; z-index: 2;
-    padding: clamp(56px, 8vw, 112px) clamp(16px, 3.2vw, 48px);
+    padding: calc(var(--fr-in) + var(--fr) + clamp(32px, 5vw, 72px)) calc(var(--fr-in) + var(--fr) + clamp(8px, 3vw, 56px));
   }
-  .cal-inner { max-width: 72rem; margin: 0 auto; }
+  .cal-inner { position: relative; max-width: 72rem; margin: 0 auto; }
+
+  /* botanical border: four repeating strips and four corner pieces */
+  .frame { position: absolute; inset: var(--fr-in); pointer-events: none; }
+  .frame i { position: absolute; display: block; }
+  .frame .s { background-image: var(--tile-h); background-repeat: round no-repeat; background-size: auto 100%; }
+  .frame .t, .frame .b { left: calc(var(--fr) * 1.7); right: calc(var(--fr) * 1.7); height: var(--fr); }
+  .frame .t { top: 0; }
+  .frame .b { bottom: 0; transform: scaleY(-1); }
+  .frame .l, .frame .r {
+    top: calc(var(--fr) * 1.7); bottom: calc(var(--fr) * 1.7); width: var(--fr);
+    background-image: var(--tile-v); background-repeat: no-repeat round; background-size: 100% auto;
+  }
+  .frame .l { left: 0; transform: scaleX(-1); }
+  .frame .r { right: 0; }
+  .frame .c { width: calc(var(--fr) * 1.6); height: calc(var(--fr) * 1.6); background: var(--corner) center / contain no-repeat; }
+  .frame .tl { top: 0; left: 0; }
+  .frame .tr { top: 0; right: 0; transform: scaleX(-1); }
+  .frame .bl { bottom: 0; left: 0; transform: scaleY(-1); }
+  .frame .br { bottom: 0; right: 0; transform: scale(-1, -1); }
+
   .cal-head {
-    display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between;
-    gap: 20px 32px; margin-bottom: clamp(20px, 3vw, 36px);
-  }
-  .cal-kicker {
-    display: block; margin-bottom: .9em;
-    font-family: var(--pixel); font-size: .72rem; letter-spacing: .08em;
-    text-transform: uppercase; color: var(--pine-ink);
+    display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 15rem);
+    align-items: end; gap: 16px clamp(20px, 3vw, 40px);
+    margin-bottom: clamp(28px, 4vw, 48px);
   }
   .cal h2 {
     margin: 0; font-weight: 700; line-height: 1; letter-spacing: -.02em;
     font-size: clamp(2rem, 5vw, 3.8rem); color: var(--maple);
     text-shadow: 0 1px 0 rgba(255, 236, 210, .55);
+    text-wrap: balance;
   }
   .cal h2 em { font-weight: 400; }
-  .cal-months { display: flex; gap: 8px; }
-  .cal-months button {
-    font-family: var(--pixel); font-size: .78rem; letter-spacing: .06em; text-transform: uppercase;
-    padding: .7em 1.1em; cursor: pointer;
-    color: var(--maple); background: transparent;
-    border: 2px solid var(--maple);
-    transition: background .2s, color .2s;
+  .cal-dates {
+    display: block; margin-top: .9em;
+    font-family: var(--pixel); font-size: .74rem; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--pine-ink);
   }
-  .cal-months button:hover { background: rgba(155, 34, 38, .1); }
-  .cal-months button[aria-pressed="true"] { background: var(--maple); color: var(--paper-light); }
-  .cal button:focus-visible, .cal-dialog button:focus-visible { outline: 2px solid var(--maple); outline-offset: 3px; }
-
-  .cal-legend { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 0 0 16px; padding: 0; list-style: none;
-    font-size: .88rem; color: var(--ink-soft); }
-  .cal-legend li { display: inline-flex; align-items: center; gap: .55em; }
-  .cal-legend i { width: 10px; height: 10px; background: var(--c); display: inline-block; }
-
-  .cal-grid {
-    background: rgba(246, 221, 186, .55);
-    border: 2px solid var(--oak);
-    box-shadow: 8px 10px 0 rgba(59, 36, 20, .14);
+  /* the brochure's fold, a long maple dash */
+  .cal-fold {
+    align-self: stretch; width: 0;
+    border-left: 2px dashed var(--maple);
+    opacity: .75;
   }
+  .cal-hint {
+    margin: 0; font: 600 1.3rem/1.15 var(--hand); color: var(--ink-soft);
+  }
+
+  /* ---------- The sheet ---------- */
+  .cal-sheet {
+    position: relative;
+    padding: clamp(14px, 2vw, 28px) clamp(10px, 1.6vw, 24px) clamp(18px, 2.4vw, 32px);
+    background:
+      linear-gradient(170deg, rgba(255, 255, 255, .5), transparent 40%),
+      var(--card);
+    color: var(--line);
+    transform: rotate(-.45deg);
+    box-shadow:
+      0 1px 2px rgba(59, 36, 20, .18),
+      0 6px 12px -4px rgba(59, 36, 20, .2),
+      0 28px 56px -18px rgba(59, 36, 20, .45);
+  }
+  /* two strips of masking tape holding it to the brochure */
+  .cal-sheet::before, .cal-sheet::after {
+    content: ""; position: absolute; top: -14px;
+    width: clamp(70px, 9vw, 120px); height: 28px;
+    background: rgba(236, 214, 170, .78);
+    box-shadow: 0 1px 2px rgba(59, 36, 20, .15);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0 3px, #000 3px calc(100% - 3px), transparent calc(100% - 3px));
+            mask-image: linear-gradient(90deg, transparent 0 3px, #000 3px calc(100% - 3px), transparent calc(100% - 3px));
+  }
+  .cal-sheet::before { left: 7%; transform: rotate(-5deg); }
+  .cal-sheet::after { right: 7%; transform: rotate(4deg); }
+
+  :where(.cal) button { font: inherit; color: inherit; -webkit-tap-highlight-color: transparent; }
+  .cal button:focus-visible, .cal-dialog button:focus-visible { outline: 2px dashed var(--marker); outline-offset: 3px; }
+
+  /* events that run the whole season: written across the top with arrows to both ends */
+  .cal-season { margin: 0 0 clamp(10px, 1.6vw, 18px); padding: 0; list-style: none; }
+  .season-btn {
+    display: flex; align-items: center; gap: .7em; width: 100%;
+    padding: .1em 0 .3em; background: none; border: 0; cursor: pointer;
+    color: var(--marker);
+  }
+  .season-btn .ln { position: relative; flex: 1; height: 2px; min-width: 1.5em; background: currentColor; border-radius: 2px; }
+  .season-btn .ln::before {
+    content: ""; position: absolute; top: 50%; width: 9px; height: 9px;
+    border: solid currentColor; border-width: 0 0 2px 2px;
+  }
+  .season-btn .ln.l::before { left: 0; transform: translateY(-50%) rotate(45deg); }
+  .season-btn .ln.r::before { right: 0; transform: translateY(-50%) rotate(-135deg); }
+  .season-btn .nm { font: 700 clamp(1.45rem, 2.4vw, 2rem)/1 var(--hand); white-space: nowrap; }
+  .season-btn .when {
+    font: 700 .7rem/1 var(--grot); letter-spacing: .07em; text-transform: uppercase;
+    color: var(--line); white-space: nowrap;
+  }
+  .season-btn:hover .nm { text-decoration: underline wavy; text-decoration-thickness: 1.5px; text-underline-offset: .2em; }
+
+  /* the printed grid */
+  .cal-board { --rule: 2px solid var(--line); }
   .cal-dows, .cal-week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
-  .cal-dows { background: var(--oak); color: var(--paper-light); }
   .cal-dows span {
-    padding: .6em .7em; font-family: var(--pixel); font-size: .7rem;
-    letter-spacing: .08em; text-transform: uppercase;
+    padding: .35em .5em .15em;
+    font: 400 clamp(.85rem, 1.45vw, 1.3rem)/1.1 var(--marker-font);
+    text-transform: uppercase; letter-spacing: .02em;
+    border-left: var(--rule); border-bottom: var(--rule);
   }
-  .cal-week { position: relative; row-gap: 3px; padding-bottom: 8px; border-top: 1px solid rgba(139, 90, 43, .35); }
-  .cal-week:first-of-type { border-top: 0; }
+  .cal-dows span:last-child { border-right: var(--rule); }
+  .cal-week {
+    position: relative; align-content: start;
+    min-height: clamp(7rem, 10.5vw, 9.75rem);
+    padding-bottom: 8px;
+  }
   .cal-cells { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); pointer-events: none; }
-  .cal-cells i { border-left: 1px solid rgba(139, 90, 43, .3); }
-  .cal-cells i:first-child { border-left: 0; }
-  .cal-cells i.is-out { background: rgba(139, 90, 43, .09); }
-  .cal-num {
-    position: relative; grid-row: 1; padding: .55em .7em .35em;
-    font-family: var(--pixel); font-size: .78rem; color: var(--ink-soft);
-  }
-  .cal-num.is-out { opacity: .4; }
-  .cal-num.is-today span { background: var(--maple); color: var(--paper-light); padding: .15em .45em; }
-  .cal-ev {
-    position: relative; z-index: 1;
-    margin: 0 4px; padding: .38em .6em;
-    min-width: 0; text-align: left; cursor: pointer;
-    font: 700 .8rem/1.25 var(--serif); letter-spacing: .005em;
-    color: var(--paper-light); background: var(--c);
-    border: 0; border-left: 4px solid rgba(59, 36, 20, .45);
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    transition: transform .2s var(--ease-out), box-shadow .2s;
-  }
-  .cal-ev:hover { transform: translateY(-2px); box-shadow: 0 5px 0 rgba(59, 36, 20, .25); }
-  .cal-ev.cont-l { margin-left: 0; border-left-width: 0; }
-  .cal-ev.cont-r { margin-right: 0; }
+  .cal-cells i { border-left: var(--rule); border-bottom: var(--rule); }
+  .cal-cells i:last-child, .cal-cells i.end { border-right: var(--rule); }
+  .cal-cells i.void { border: 0; }
 
-  .cal-list { display: none; margin: 0; padding: 0; list-style: none; }
-  .cal-list li + li { border-top: 1px solid rgba(139, 90, 43, .35); }
-  .cal-list button {
-    display: grid; grid-template-columns: 4.4rem 1fr; gap: 14px; width: 100%;
-    padding: 14px 16px; text-align: left; cursor: pointer;
-    background: transparent; border: 0; border-left: 6px solid var(--c);
-    font-family: var(--serif); color: var(--ink);
+  .cal-num {
+    position: relative; z-index: 2; grid-row: 1;
+    display: flex; align-items: baseline; gap: .45em;
+    padding: .5em .6em .35em;
+    font: 800 clamp(.95rem, 1.35vw, 1.2rem)/1 var(--grot);
+    font-variant-numeric: tabular-nums;
   }
-  .cal-list button:hover { background: rgba(155, 34, 38, .07); }
-  .cal-list .d { font-family: var(--pixel); font-size: .78rem; line-height: 1.5; color: var(--ink-soft); text-transform: uppercase; }
-  .cal-list .n { font-weight: 700; font-size: 1.05rem; }
-  .cal-list .t { display: block; margin-top: .2em; font-size: .85rem; color: var(--ink-soft); font-weight: 400; }
-  .cal-empty { padding: 28px 16px; color: var(--ink-soft); }
+  .cal-num .d { position: relative; }
+  .cal-num .mo { font: 700 1.05rem/1 var(--hand); color: var(--marker); }
+  .cal-num .heart { width: .95em; height: .95em; align-self: center; color: var(--marker); }
+  /* hand-drawn rings round the days that have something on */
+  .ring {
+    position: absolute; left: -.62em; top: -.42em;
+    width: calc(100% + 1.24em); height: calc(100% + .84em);
+    overflow: visible; pointer-events: none;
+  }
+  .ring path {
+    fill: none; stroke: var(--c); stroke-width: 2.2; stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+    stroke-dasharray: 1; stroke-dashoffset: 0;
+  }
+  .will-draw .ring path { stroke-dashoffset: 1; }
+  .is-drawn .ring path {
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset .7s cubic-bezier(.65, 0, .35, 1) calc(var(--i, 0) * 70ms);
+  }
+
+  /* a single-day event: written into its square */
+  .cal-note {
+    position: relative; z-index: 1;
+    align-self: start;
+    margin: .15em .5em .2em; padding: .05em 0 .1em;
+    min-width: 0; text-align: left; cursor: pointer;
+    font: 700 clamp(1.02rem, 1.4vw, 1.25rem)/1.02 var(--hand);
+    background: none; border: 0;
+    text-decoration: underline; text-decoration-color: var(--c);
+    text-decoration-thickness: 2px; text-underline-offset: .16em; text-decoration-skip-ink: none;
+    overflow-wrap: anywhere;
+    transition: color .2s;
+  }
+  .cal-note:hover { color: var(--marker); }
+
+  /* boxed events: a photo stuck in, outlined in red marker, its name on a paper scrap */
+  .cal-box {
+    position: relative; z-index: 1;
+    height: clamp(4.6rem, 7.2vw, 6.25rem);
+    margin: .3em .45em .25em; padding: 0;
+    background: var(--tint); cursor: pointer;
+    border: 3px solid var(--marker);
+    transform: rotate(var(--tilt, 0deg));
+    transition: transform .3s var(--ease-out), box-shadow .3s var(--ease-out);
+  }
+  .cal-box img, .agenda .thumb img, .dlg-photo img {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover;
+    filter: grayscale(1) contrast(1.2) brightness(1.06);
+    mix-blend-mode: multiply;
+  }
+  .cal-box .lbl {
+    position: absolute; left: .3em; top: .3em; z-index: 1;
+    max-width: calc(100% - .6em);
+    padding: .08em .4em .14em;
+    background: var(--card);
+    font: 700 clamp(.98rem, 1.3vw, 1.18rem)/1 var(--hand);
+    text-align: left;
+    transform: rotate(-1.5deg);
+    box-shadow: 0 1px 2px rgba(59, 36, 20, .25);
+    overflow-wrap: anywhere;
+  }
+  .cal-box.cont-l { margin-left: 0; border-left: 0; --tilt: 0deg; }
+  .cal-box.cont-r { margin-right: 0; border-right: 0; --tilt: 0deg; }
+  .cal-box:hover { transform: rotate(0deg) translateY(-3px); box-shadow: 0 14px 22px -10px rgba(59, 36, 20, .55); }
+
+  /* the key, written into the empty squares after the last day */
+  .cal-key {
+    position: relative; z-index: 1;
+    margin: 0; padding: .55em .9em;
+    list-style: none;
+    font: 600 clamp(1rem, 1.3vw, 1.18rem)/1.15 var(--hand); color: var(--ink-soft);
+  }
+  .cal-key li { display: flex; align-items: center; gap: .55em; margin: 0 0 .3em; }
+  .cal-key .k-ring { position: relative; width: 1.1em; height: .8em; flex: none; }
+  .cal-key .k-ring .ring { left: 0; top: 0; width: 100%; height: 100%; }
+  .cal-key .k-box { width: 1.1em; height: .8em; flex: none; border: 2px solid var(--marker); }
+  .cal-key .k-note { margin-top: .5em; color: var(--ink-soft); font-weight: 500; }
+  .cal-key.m { display: none; }
+
+  /* ---------- Phones: the same marked-up sheet, as a list ---------- */
+  .cal-list { display: none; margin: 0; padding: 0; list-style: none; }
+  .agenda {
+    display: grid; grid-template-columns: 3.4rem minmax(0, 1fr) auto; align-items: center; gap: 12px;
+    width: 100%; padding: 12px 4px; text-align: left; cursor: pointer;
+    background: transparent; border: 0; border-bottom: 2px solid var(--line);
+  }
+  .cal-list li:first-child .agenda { border-top: 2px solid var(--line); }
+  .agenda .ad { display: grid; justify-items: start; gap: .5em; padding-left: .5em; }
+  .agenda .ad b { position: relative; font: 800 1.2rem/1 var(--grot); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .agenda .ad b.rng { font-size: .95rem; }
+  .agenda .ad small { font: 700 1rem/1 var(--hand); color: var(--marker); }
+  .agenda .nm { display: block; font: 700 1.35rem/1.05 var(--hand); }
+  .agenda .tg {
+    display: block; margin-top: .35em;
+    font: 700 .66rem/1 var(--grot); letter-spacing: .07em; text-transform: uppercase; color: var(--ink-soft);
+  }
+  .agenda .thumb {
+    position: relative; width: 58px; height: 58px; overflow: hidden;
+    background: var(--tint); border: 3px solid var(--marker);
+    transform: rotate(var(--tilt, 0deg));
+  }
+  .agenda:hover .nm { color: var(--marker); }
+
   @media (max-width: 760px) {
-    .cal-grid .cal-dows, .cal-grid .cal-week { display: none; }
+    .cal-head { grid-template-columns: 1fr; }
+    .cal-fold { width: 4rem; height: 0; border-left: 0; border-top: 2px dashed var(--maple); }
+    .cal-board { display: none; }
     .cal-list { display: block; }
+    .cal-key.m { display: block; padding: 1em .3em 0; }
+    .cal-sheet { transform: rotate(-.3deg); }
+    .season-btn { flex-wrap: wrap; justify-content: center; row-gap: .35em; }
+    .season-btn .when { flex-basis: 100%; text-align: center; order: 3; }
   }
 
   /* ---------- Event pop-up ---------- */
   .cal-dialog {
-    width: min(26rem, calc(100vw - 32px)); padding: 0;
-    color: var(--ink); background: var(--paper-light);
-    border: 2px solid var(--maple);
-    box-shadow: 10px 12px 0 rgba(59, 36, 20, .35);
+    --card: #FBF2E6; --line: #2A1A0F; --marker: #BE3324;
+    --hand: "Caveat", "Segoe Print", cursive; --grot: "Archivo", "Helvetica Neue", Arial, sans-serif;
+    width: min(26rem, calc(100vw - 32px)); padding: 0; overflow: visible;
+    color: var(--line); background: var(--card);
+    border: 0;
+    box-shadow: 0 2px 4px rgba(59, 36, 20, .2), 0 30px 60px -16px rgba(59, 36, 20, .6);
   }
   .cal-dialog::backdrop { background: rgba(59, 36, 20, .55); }
-  .cal-dialog[open] { animation: pop .35s var(--ease-out); }
-  @keyframes pop { from { opacity: 0; transform: translateY(14px) scale(.97); } }
-  .dlg-bar { height: 10px; background: var(--c, var(--maple)); }
-  .dlg-body { padding: 24px 24px 26px; }
-  .dlg-tag, .dlg-soon { font-family: var(--pixel); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; }
-  .dlg-tag { color: var(--pine-ink); }
-  .dlg-body h3 { margin: .5em 0 .3em; font-size: 1.7rem; line-height: 1.15; color: var(--maple); letter-spacing: -.01em; }
-  .dlg-date { margin: 0 0 1.4em; color: var(--ink-soft); }
-  .dlg-soon { display: inline-block; padding: .7em 1em; background: var(--maple); color: var(--paper-light); }
+  .cal-dialog[open] { animation: pop .4s var(--ease-out); }
+  @keyframes pop { from { opacity: 0; transform: translateY(14px) rotate(-1deg) scale(.97); } }
+  .dlg-photo {
+    position: relative; height: 11rem; margin: 14px 14px 0; overflow: hidden;
+    background: var(--tint); border: 3px solid var(--marker);
+  }
+  .dlg-photo[hidden] { display: none; }
+  .dlg-body { padding: 20px 24px 26px; }
+  .dlg-tag {
+    display: inline-flex; align-items: center; gap: .5em;
+    font: 700 .7rem/1 var(--grot); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft);
+  }
+  .dlg-tag::before { content: ""; width: .7em; height: .7em; border-radius: 50%; border: 2px solid var(--c); }
+  .dlg-body h3 { margin: .3em 0 .15em; font: 700 2.3rem/1 var(--hand); color: var(--line); }
+  .dlg-date { margin: 0 0 1.3em; font: 700 .8rem/1.4 var(--grot); letter-spacing: .04em; text-transform: uppercase; color: var(--marker); }
+  .dlg-soon {
+    display: inline-block; padding: .7em 1em;
+    font-family: var(--pixel); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase;
+    background: var(--maple); color: var(--paper-light);
+  }
   .dlg-body p.dlg-note { margin: 1em 0 0; font-size: .95rem; color: var(--ink-soft); }
   .dlg-close {
-    position: absolute; top: 14px; right: 12px; width: 32px; height: 32px; cursor: pointer;
-    font: 700 1.3rem/1 var(--serif); color: var(--paper-light); background: rgba(59, 36, 20, .4); border: 0;
+    position: absolute; top: -12px; right: -12px; z-index: 2;
+    display: grid; place-items: center; width: 40px; height: 40px; padding: 0; cursor: pointer;
+    color: var(--card); background: var(--line); border: 0; border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(59, 36, 20, .35);
+    transition: background .2s;
   }
-  .dlg-close:hover { background: var(--bark); }
+  .dlg-close svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; }
+  .dlg-close:hover { background: var(--marker); }
+
   @media (prefers-reduced-motion: reduce) {
     .cal-dialog[open] { animation: none; }
-    .cal-ev { transition: none; }
+    .cal-box, .cal-note { transition: none; }
   }
+  .cal {
+    --tile-h: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 40'%3E%3Cg fill='none' stroke='%239B2226' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill-rule='evenodd'%3E%3Cg fill='none'%3E%3Cpath d='M4 12Q20 8 38 11M11 10.8l-3.6 -4M11 10.8l-3.6 4M17 10.2l-3.6 -4M17 10.2l-3.6 4M23 9.9l-3.6 -4M23 9.9l-3.6 4M29 10.1l-3.6 -4M29 10.1l-3.6 4M35 10.6l-3.6 -4M35 10.6l-3.6 4'/%3E%3Cpath d='M50 13C46 10 45 7 47.5 6C49 5.4 50 6.5 50 7.5C50 6.5 51 5.4 52.5 6C55 7 54 10 50 13Z'/%3E%3Cpath d='M64 18Q70 4 83 6Q77 18 64 18ZM64 18Q73 12 81 7'/%3E%3Cpath d='M102 14Q116 5 134 10M114 9.5q1 -6 7 -7q0 5 -7 7ZM123 8q4 -4 9 -3q-3 4 -9 3Z'/%3E%3Cpath d='M4 34Q8 24 19 23Q14 32 4 34ZM4 34Q11 28 17 24'/%3E%3Cpath d='M29 32.55C25.6 30 24.75 27.45 26.875 26.6C28.15 26.09 29 27.025 29 27.875C29 27.025 29.85 26.09 31.125 26.6C33.25 27.45 32.4 30 29 32.55Z'/%3E%3Cpath d='M88 30Q106 34 124 29M94 31.4l3.6 -4M94 31.4l3.6 4M100 32l3.6 -4M100 32l3.6 4M106 32.1l3.6 -4M106 32.1l3.6 4M112 31.6l3.6 -4M112 31.6l3.6 4M118 30.6l3.6 -4M118 30.6l3.6 4'/%3E%3Cpath d='M133 32.55C129.6 30 128.75 27.45 130.875 26.6C132.15 26.09 133 27.025 133 27.875C133 27.025 133.85 26.09 135.125 26.6C137.25 27.45 136.4 30 133 32.55Z'/%3E%3Cpath d='M141 37Q147 27 157 23M147 30q-4 -4 -3 -8M152 26q1 -5 5 -7'/%3E%3Cg stroke='none' fill='%239B2226'%3E%3Ccircle cx='44' cy='17' r='0.9'/%3E%3Ccircle cx='58' cy='6' r='0.7'/%3E%3Ccircle cx='60' cy='14' r='0.8'/%3E%3Ccircle cx='92' cy='9' r='0.8'/%3E%3Ccircle cx='96' cy='14' r='0.7'/%3E%3Ccircle cx='146' cy='8' r='0.8'/%3E%3Ccircle cx='151' cy='12' r='0.7'/%3E%3Ccircle cx='153' cy='5' r='0.7'/%3E%3Ccircle cx='38' cy='31' r='0.8'/%3E%3Ccircle cx='42' cy='34' r='0.7'/%3E%3Ccircle cx='44' cy='29' r='0.7'/%3E%3Ccircle cx='70' cy='32' r='0.8'/%3E%3Ccircle cx='76' cy='28' r='0.7'/%3E%3Ccircle cx='80' cy='34' r='0.8'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    --tile-v: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 160'%3E%3Cg transform='translate(40 0) rotate(90)' fill='none' stroke='%239B2226' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12Q20 8 38 11M11 10.8l-3.6 -4M11 10.8l-3.6 4M17 10.2l-3.6 -4M17 10.2l-3.6 4M23 9.9l-3.6 -4M23 9.9l-3.6 4M29 10.1l-3.6 -4M29 10.1l-3.6 4M35 10.6l-3.6 -4M35 10.6l-3.6 4'/%3E%3Cpath d='M50 13C46 10 45 7 47.5 6C49 5.4 50 6.5 50 7.5C50 6.5 51 5.4 52.5 6C55 7 54 10 50 13Z'/%3E%3Cpath d='M64 18Q70 4 83 6Q77 18 64 18ZM64 18Q73 12 81 7'/%3E%3Cpath d='M102 14Q116 5 134 10M114 9.5q1 -6 7 -7q0 5 -7 7ZM123 8q4 -4 9 -3q-3 4 -9 3Z'/%3E%3Cpath d='M4 34Q8 24 19 23Q14 32 4 34ZM4 34Q11 28 17 24'/%3E%3Cpath d='M29 32.55C25.6 30 24.75 27.45 26.875 26.6C28.15 26.09 29 27.025 29 27.875C29 27.025 29.85 26.09 31.125 26.6C33.25 27.45 32.4 30 29 32.55Z'/%3E%3Cpath d='M88 30Q106 34 124 29M94 31.4l3.6 -4M94 31.4l3.6 4M100 32l3.6 -4M100 32l3.6 4M106 32.1l3.6 -4M106 32.1l3.6 4M112 31.6l3.6 -4M112 31.6l3.6 4M118 30.6l3.6 -4M118 30.6l3.6 4'/%3E%3Cpath d='M133 32.55C129.6 30 128.75 27.45 130.875 26.6C132.15 26.09 133 27.025 133 27.875C133 27.025 133.85 26.09 135.125 26.6C137.25 27.45 136.4 30 133 32.55Z'/%3E%3Cpath d='M141 37Q147 27 157 23M147 30q-4 -4 -3 -8M152 26q1 -5 5 -7'/%3E%3Cg stroke='none' fill='%239B2226'%3E%3Ccircle cx='44' cy='17' r='0.9'/%3E%3Ccircle cx='58' cy='6' r='0.7'/%3E%3Ccircle cx='60' cy='14' r='0.8'/%3E%3Ccircle cx='92' cy='9' r='0.8'/%3E%3Ccircle cx='96' cy='14' r='0.7'/%3E%3Ccircle cx='146' cy='8' r='0.8'/%3E%3Ccircle cx='151' cy='12' r='0.7'/%3E%3Ccircle cx='153' cy='5' r='0.7'/%3E%3Ccircle cx='38' cy='31' r='0.8'/%3E%3Ccircle cx='42' cy='34' r='0.7'/%3E%3Ccircle cx='44' cy='29' r='0.7'/%3E%3Ccircle cx='70' cy='32' r='0.8'/%3E%3Ccircle cx='76' cy='28' r='0.7'/%3E%3Ccircle cx='80' cy='34' r='0.8'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    --corner: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%239B2226' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 62V14Q6 6 14 6H62'/%3E%3Cpath d='M12 62V20M20 12H62' stroke-dasharray='0.1 5'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3Cellipse cx='34' cy='29.6' rx='2.2' ry='4.2' transform='rotate(0 34 34)'/%3E%3Cellipse cx='34' cy='29.6' rx='2.2' ry='4.2' transform='rotate(72 34 34)'/%3E%3Cellipse cx='34' cy='29.6' rx='2.2' ry='4.2' transform='rotate(144 34 34)'/%3E%3Cellipse cx='34' cy='29.6' rx='2.2' ry='4.2' transform='rotate(216 34 34)'/%3E%3Cellipse cx='34' cy='29.6' rx='2.2' ry='4.2' transform='rotate(288 34 34)'/%3E%3Cpath d='M44 20q6 -1 9 -6M20 44q-1 6 -6 9'/%3E%3C/g%3E%3Cg fill='%239B2226'%3E%3Ccircle cx='34' cy='34' r='1.3'/%3E%3Ccircle cx='46' cy='44' r='.8'/%3E%3Ccircle cx='50' cy='40' r='.7'/%3E%3C/g%3E%3C/svg%3E");
+  }
+
   @media (max-width: 640px) {
     .close-inner { grid-template-columns: 1fr; }
     .bar .full { display: none; }
@@ -432,30 +618,26 @@
   </section>
 
   <section class="cal" id="calendar" aria-labelledby="cal-title">
+    <div class="frame" aria-hidden="true">
+      <i class="s t"></i><i class="s b"></i><i class="l"></i><i class="r"></i>
+      <i class="c tl"></i><i class="c tr"></i><i class="c bl"></i><i class="c br"></i>
+    </div>
     <div class="cal-inner">
       <div class="cal-head">
         <div>
-          <span class="cal-kicker">Oct 19 &ndash; Nov 19, 2026</span>
           <h2 id="cal-title">The season, <em>day by day</em></h2>
+          <span class="cal-dates">Oct 19 &ndash; Nov 19, 2026</span>
         </div>
-        <div class="cal-months" role="group" aria-label="Month">
-          <button type="button" data-m="9" aria-pressed="true">October</button>
-          <button type="button" data-m="10" aria-pressed="false">November</button>
-        </div>
+        <span class="cal-fold" aria-hidden="true"></span>
+        <p class="cal-hint">Circled days have something on. Tap an event for the details.</p>
       </div>
-      <ul class="cal-legend" aria-label="Event types">
-        <li style="--c:var(--pine-ink)"><i></i>Dev</li>
-        <li style="--c:var(--ginkgo)"><i></i>Workshop</li>
-        <li style="--c:var(--maple)"><i></i>Fun event</li>
-        <li style="--c:var(--oak)"><i></i>Other</li>
-      </ul>
-      <div class="cal-grid" id="cal-grid"></div>
+      <div class="cal-sheet" id="cal-sheet"></div>
     </div>
   </section>
 
   <dialog class="cal-dialog" id="cal-dialog" aria-labelledby="dlg-title">
-    <div class="dlg-bar"></div>
-    <button type="button" class="dlg-close" aria-label="Close">&times;</button>
+    <button type="button" class="dlg-close" aria-label="Close"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2l10 10M12 2L2 12"/></svg></button>
+    <div class="dlg-photo" hidden><img alt="" loading="lazy" decoding="async"></div>
     <div class="dlg-body">
       <span class="dlg-tag"></span>
       <h3 id="dlg-title"></h3>
@@ -830,7 +1012,8 @@
 
 // ---------- Calendar ----------
 (() => {
-  const YEAR = 2026;
+  // The season runs on one sheet, from the first day to the last; nothing either side of it is drawn.
+  const FIRST = '2026-10-19', LAST = '2026-11-19';
   // Fallback copy of the Notion calendar, used until (or unless) /api/aoc-events answers.
   // Dates are inclusive; "end" is omitted for single days.
   const EVENTS = [
@@ -849,21 +1032,51 @@
     { name: 'Ra.One screening',       start: '2026-11-13', tag: 'Fun event' },
     { name: 'Dev Showcase',           start: '2026-11-17', tag: 'Dev' },
   ];
-  const COLORS = { 'Dev': 'var(--pine-ink)', 'Workshop': 'var(--ginkgo)', 'Fun event': 'var(--maple)' };
+  // ring: the marker circling the date; tint: the colour a photo is printed in
+  const TAGS = {
+    'Dev':       { ring: 'var(--pine-ink)', tint: '#6A86B4' },
+    'Workshop':  { ring: 'var(--ginkgo)',   tint: '#E3AA2C' },
+    'Fun event': { ring: 'var(--marker)',   tint: '#DE6B37' },
+  };
+  const OTHER = { ring: 'var(--oak)', tint: '#C9935C' };
+  // Photos from past seasons, stuck onto boxed events in turn
+  const PHOTOS = ['aoc_1.jpg', 'aoc_12.jpg', 'aoc_3.jpg', 'aoc_14.jpg', 'aoc_2.jpg', 'aoc_13.jpg', 'aoc_10.jpg'].map((f) => '/img/events/' + f);
   const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  const DOW = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const DOW = ['Mon','Tues','Wed','Thurs','Fri','Sat','Sun'];
+  const DAY = 864e5;
 
   const day = (iso) => { const [y, m, d] = iso.split('-').map(Number); return new Date(y, m - 1, d); };
   const key = (d) => d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
-  const build = (list) => list.map((e) => ({ ...e, a: day(e.start), b: day(e.end || e.start), color: COLORS[e.tag] || 'var(--oak)' }));
-  let evs = build(EVENTS);
-  let month = 9;
-  const fmt = (d) => `${DOW[(d.getDay() + 6) % 7]} ${d.getDate()} ${MONTHS[d.getMonth()].slice(0, 3)}`;
+  const days = (a, b) => Math.round((b - a) / DAY);
+  const mon = (d) => MONTHS[d.getMonth()].slice(0, 3);
+  const fmt = (d) => `${DOW[(d.getDay() + 6) % 7].slice(0, 3)} ${d.getDate()} ${mon(d)}`;
   const range = (e) => e.end ? `${fmt(e.a)} – ${fmt(e.b)}` : fmt(e.a);
+  const A = day(FIRST), B = day(LAST);
 
-  const grid = document.getElementById('cal-grid');
+  // Clip to the season, then sort into how each is drawn:
+  // a week or longer is written across the top, a few days or a fun night gets a photo, the rest are notes.
+  function build(list) {
+    let photo = 0;
+    return list
+      .map((e) => ({ ...e, a: day(e.start), b: day(e.end || e.start) }))
+      .filter((e) => e.b >= A && e.a <= B)
+      .sort((x, y) => x.a - y.a || y.b - x.b)
+      .map((e) => {
+        const t = TAGS[e.tag] || OTHER;
+        const len = days(e.a, e.b) + 1;
+        const kind = len >= 7 ? 'season' : (len > 1 || e.tag === 'Fun event') ? 'box' : 'note';
+        return {
+          ...e, ...t, kind,
+          photo: kind === 'box' ? PHOTOS[photo++ % PHOTOS.length] : null,
+          tilt: ((photo % 3) - 1) * 0.8 + 'deg',
+          da: e.a < A ? A : e.a, db: e.b > B ? B : e.b,
+        };
+      });
+  }
+  let evs = build(EVENTS);
+
+  const sheet = document.getElementById('cal-sheet');
   const dlg = document.getElementById('cal-dialog');
-  const btns = document.querySelectorAll('.cal-months button');
   const todayKey = key(new Date());
 
   function el(tag, cls, text) {
@@ -872,97 +1085,208 @@
     if (text != null) n.textContent = text;
     return n;
   }
+  const SVG = 'http://www.w3.org/2000/svg';
+  // a felt-tip loop: starts at the left, goes round once and overshoots
+  function ring(color, i) {
+    const s = document.createElementNS(SVG, 'svg');
+    s.setAttribute('class', 'ring');
+    s.setAttribute('viewBox', '0 0 40 24');
+    s.setAttribute('preserveAspectRatio', 'none');
+    s.setAttribute('aria-hidden', 'true');
+    const p = document.createElementNS(SVG, 'path');
+    p.setAttribute('d', 'M6 9C9 3 27 1 35 5C41 9 38 18 29 21C20 24 6 22 3 16C1 11 8 5 15 4');
+    p.setAttribute('pathLength', '1');
+    s.style.setProperty('--c', color);
+    s.style.setProperty('--i', i);
+    s.append(p);
+    return s;
+  }
+  function heart() {
+    const s = document.createElementNS(SVG, 'svg');
+    s.setAttribute('class', 'heart');
+    s.setAttribute('viewBox', '0 0 20 20');
+    s.setAttribute('aria-hidden', 'true');
+    s.innerHTML = '<path d="M10 17C5 13 2 10 3 6.5C4 3.5 8 3 10 6.5C12 3 16 3.5 17 6.5C18 10 15 13 10 17Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>';
+    return s;
+  }
+  function photo(e, cls) {
+    const f = el('span', cls);
+    f.style.setProperty('--tint', e.tint);
+    const img = el('img');
+    img.src = e.photo; img.alt = ''; img.loading = 'lazy'; img.decoding = 'async';
+    f.append(img);
+    return f;
+  }
   function evButton(e, cls) {
-    const b = el('button', cls, e.name);
+    const b = el('button', cls);
     b.type = 'button';
-    b.style.setProperty('--c', e.color);
+    b.style.setProperty('--c', e.ring);
+    b.setAttribute('aria-label', `${e.name}, ${range(e)}`);
     b.addEventListener('click', () => open(e));
     return b;
   }
+  function keyList(extra) {
+    const k = el('ul', 'cal-key' + (extra ? ' ' + extra : ''));
+    [['Dev', TAGS['Dev'].ring], ['Workshop', TAGS['Workshop'].ring], ['Fun event', TAGS['Fun event'].ring], ['Other', OTHER.ring]].forEach(([n, c]) => {
+      const li = el('li');
+      const r = el('span', 'k-ring');
+      r.append(ring(c, 0));
+      li.append(r, n);
+      k.append(li);
+    });
+    const ph = el('li');
+    ph.append(el('span', 'k-box'), 'Photos are from past seasons');
+    k.append(ph);
+    return k;
+  }
 
-  function render(m) {
-    month = m;
-    grid.replaceChildren();
-    const first = new Date(YEAR, month, 1), last = new Date(YEAR, month + 1, 0);
-    const start = new Date(first); start.setDate(1 - ((first.getDay() + 6) % 7));
+  function render() {
+    sheet.replaceChildren();
+    let ringN = 0;
 
+    const season = evs.filter((e) => e.kind === 'season');
+    if (season.length) {
+      const ul = el('ul', 'cal-season');
+      season.forEach((e) => {
+        const li = el('li');
+        const b = evButton(e, 'season-btn');
+        b.append(el('span', 'ln l'), el('span', 'nm', e.name), el('span', 'ln r'),
+          el('span', 'when', e.end ? `${e.a.getDate()} ${mon(e.a)} – ${e.b.getDate()} ${mon(e.b)}` : fmt(e.a)));
+        li.append(b);
+        ul.append(li);
+      });
+      sheet.append(ul);
+    }
+
+    const board = el('div', 'cal-board');
+    board.setAttribute('role', 'group');
+    board.setAttribute('aria-label', `Calendar, ${A.getDate()} ${MONTHS[A.getMonth()]} to ${B.getDate()} ${MONTHS[B.getMonth()]}`);
     const dows = el('div', 'cal-dows');
     dows.setAttribute('aria-hidden', 'true');
     DOW.forEach((d) => dows.append(el('span', '', d)));
-    grid.append(dows);
+    board.append(dows);
 
-    for (let w = new Date(start); w <= last; w.setDate(w.getDate() + 7)) {
-      const days = Array.from({ length: 7 }, (_, i) => new Date(w.getFullYear(), w.getMonth(), w.getDate() + i));
+    const onSheet = evs.filter((e) => e.kind !== 'season');
+    const start = new Date(A); start.setDate(A.getDate() - ((A.getDay() + 6) % 7));
+    let keyPlaced = false;
+
+    for (let w = new Date(start); w <= B; w.setDate(w.getDate() + 7)) {
+      const week = Array.from({ length: 7 }, (_, i) => new Date(w.getFullYear(), w.getMonth(), w.getDate() + i));
+      const live = week.map((d) => d >= A && d <= B);
       const wk = el('div', 'cal-week');
       const cells = el('div', 'cal-cells');
       cells.setAttribute('aria-hidden', 'true');
-      days.forEach((d) => cells.append(el('i', d.getMonth() === month ? '' : 'is-out')));
+      week.forEach((d, i) => cells.append(el('i', !live[i] ? 'void' : (live[i + 1] === false ? 'end' : ''))));
       wk.append(cells);
-      days.forEach((d, i) => {
-        const out = d.getMonth() !== month, t = key(d) === todayKey;
-        const n = el('div', 'cal-num' + (out ? ' is-out' : '') + (t ? ' is-today' : ''));
+
+      week.forEach((d, i) => {
+        if (!live[i]) return;
+        const n = el('div', 'cal-num');
         n.style.gridColumn = i + 1;
-        n.append(el('span', '', d.getDate()));
+        n.setAttribute('aria-hidden', 'true');
+        const num = el('span', 'd', d.getDate());
+        const first = onSheet.find((e) => e.da <= d && e.db >= d);
+        if (first) num.append(ring(first.ring, ringN++));
+        n.append(num);
+        if (+d === +A || d.getDate() === 1) n.append(el('span', 'mo', mon(d)));
+        if (key(d) === todayKey) n.append(heart());
         wk.append(n);
       });
 
       // lay events into lanes, one row each, spanning their columns
       const lanes = [];
-      evs.filter((e) => e.b >= days[0] && e.a <= days[6])
-         .sort((x, y) => x.a - y.a || y.b - x.b)
-         .forEach((e) => {
-           const c0 = Math.max(0, Math.round((e.a - days[0]) / 864e5));
-           const c1 = Math.min(6, Math.round((e.b - days[0]) / 864e5));
-           let lane = lanes.findIndex((end) => end < c0);
-           if (lane < 0) lane = lanes.push(-1) - 1;
-           lanes[lane] = c1;
-           const b = evButton(e, 'cal-ev' + (e.a < days[0] ? ' cont-l' : '') + (e.b > days[6] ? ' cont-r' : ''));
-           b.style.gridColumn = `${c0 + 1} / ${c1 + 2}`;
-           b.style.gridRow = lane + 2;
-           b.title = `${e.name}, ${range(e)}`;
-           wk.append(b);
-         });
-      grid.append(wk);
-    }
+      const c0w = live.indexOf(true), c1w = live.lastIndexOf(true);
+      onSheet.filter((e) => e.db >= week[c0w] && e.da <= week[c1w]).forEach((e) => {
+        const c0 = Math.max(c0w, days(week[0], e.da));
+        const c1 = Math.min(c1w, days(week[0], e.db));
+        let lane = lanes.findIndex((end) => end < c0);
+        if (lane < 0) lane = lanes.push(-1) - 1;
+        lanes[lane] = c1;
+        let b;
+        if (e.kind === 'box') {
+          b = evButton(e, 'cal-box' + (e.da < week[c0w] ? ' cont-l' : '') + (e.db > week[c1w] ? ' cont-r' : ''));
+          b.style.setProperty('--tint', e.tint);
+          b.style.setProperty('--tilt', e.tilt);
+          const img = el('img');
+          img.src = e.photo; img.alt = ''; img.loading = 'lazy'; img.decoding = 'async';
+          b.append(img, el('span', 'lbl', e.name));
+        } else {
+          b = evButton(e, 'cal-note');
+          b.textContent = e.name;
+        }
+        b.style.gridColumn = `${c0 + 1} / ${c1 + 2}`;
+        b.style.gridRow = lane + 2;
+        wk.append(b);
+      });
 
-    // phones: a plain agenda for the month instead of the grid
+      // the key goes in the empty squares after the last day, when there is room
+      const tail = 6 - c1w;
+      if (!keyPlaced && w.getTime() + 7 * DAY > B.getTime() && tail >= 2) {
+        const k = keyList();
+        k.style.gridColumn = `${c1w + 2} / 8`;
+        k.style.gridRow = `1 / span ${Math.max(2, lanes.length + 1)}`;
+        wk.append(k);
+        keyPlaced = true;
+      }
+      board.append(wk);
+    }
+    sheet.append(board);
+    if (!keyPlaced) sheet.append(keyList());
+
+    // phones: the same season as a list
     const list = el('ul', 'cal-list');
-    const inMonth = evs.filter((e) => e.b >= first && e.a <= last).sort((x, y) => x.a - y.a);
-    if (!inMonth.length) list.append(el('li', 'cal-empty', 'Nothing scheduled this month.'));
-    inMonth.forEach((e) => {
+    if (!onSheet.length) list.append(el('li', 'cal-empty', 'Nothing on the calendar yet.'));
+    onSheet.forEach((e) => {
       const li = el('li');
-      const b = el('button');
-      b.type = 'button';
-      b.style.setProperty('--c', e.color);
-      const mon = (x) => MONTHS[x.getMonth()].slice(0, 3);
-      const d = el('span', 'd', !e.end ? `${e.a.getDate()} ${mon(e.a)}`
-        : e.a.getMonth() === e.b.getMonth() ? `${e.a.getDate()}–${e.b.getDate()} ${mon(e.b)}`
-        : `${e.a.getDate()} ${mon(e.a)} – ${e.b.getDate()} ${mon(e.b)}`);
-      const n = el('span', 'n', e.name);
-      n.append(el('span', 't', e.tag || 'Event'));
-      b.append(d, n);
-      b.addEventListener('click', () => open(e));
+      const b = evButton(e, 'agenda');
+      const ad = el('span', 'ad');
+      const single = !e.end;
+      const sameMonth = e.a.getMonth() === e.b.getMonth();
+      const num = el('b', single ? '' : 'rng', single ? e.a.getDate() : sameMonth ? `${e.a.getDate()}–${e.b.getDate()}` : `${e.a.getDate()}–${e.b.getDate()}`);
+      if (single) num.append(ring(e.ring, 0));
+      ad.append(num, el('small', '', single || sameMonth ? mon(e.a) : `${mon(e.a)}–${mon(e.b)}`));
+      const txt = el('span');
+      txt.append(el('span', 'nm', e.name), el('span', 'tg', e.tag || 'Event'));
+      b.append(ad, txt);
+      if (e.photo) {
+        const t = photo(e, 'thumb');
+        t.style.setProperty('--tilt', e.tilt);
+        b.append(t);
+      }
       li.append(b);
       list.append(li);
     });
-    grid.append(list);
-
-    btns.forEach((b) => b.setAttribute('aria-pressed', String(+b.dataset.m === month)));
+    sheet.append(list, keyList('m'));
   }
 
   function open(e) {
-    dlg.style.setProperty('--c', e.color);
+    dlg.style.setProperty('--c', e.ring);
     dlg.querySelector('.dlg-tag').textContent = e.tag || 'Event';
     dlg.querySelector('h3').textContent = e.name;
     dlg.querySelector('.dlg-date').textContent = range(e);
+    const ph = dlg.querySelector('.dlg-photo');
+    ph.hidden = !e.photo;
+    if (e.photo) {
+      ph.style.setProperty('--tint', e.tint);
+      ph.querySelector('img').src = e.photo;
+    }
     dlg.showModal();
   }
   dlg.querySelector('.dlg-close').addEventListener('click', () => dlg.close());
   dlg.addEventListener('click', (ev) => { if (ev.target === dlg) dlg.close(); });  // backdrop
 
-  btns.forEach((b) => b.addEventListener('click', () => render(+b.dataset.m)));
-  const t = new Date();
-  render(t.getFullYear() === YEAR && t.getMonth() === 10 ? 10 : 9);
+  render();
+
+  // the rings are drawn on as the sheet comes into view
+  if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    sheet.classList.add('will-draw');
+    const io = new IntersectionObserver((entries) => {
+      if (!entries.some((x) => x.isIntersecting)) return;
+      sheet.classList.add('is-drawn');
+      io.disconnect();
+    }, { threshold: 0.25 });
+    io.observe(sheet);
+  }
 
   // Live events from Notion; on any failure the fallback list above stays on screen
   fetch('/api/aoc-events')
@@ -970,7 +1294,7 @@
     .then((d) => {
       if (!Array.isArray(d.events) || !d.events.length) return;
       evs = build(d.events);
-      render(month);
+      render();
     })
     .catch(() => {});
 })();

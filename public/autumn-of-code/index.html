@@ -380,6 +380,15 @@
   .season-btn .ln.l::before { left: 0; transform: translateY(-50%) rotate(45deg); }
   .season-btn .ln.r::before { right: 0; transform: translateY(-50%) rotate(-135deg); }
   .season-btn .nm { font: 700 clamp(1.45rem, 2.4vw, 2rem)/1 var(--hand); white-space: nowrap; }
+  /* the month-long hackathon is the headline: a highlighter swipe behind the name, and the whole sheet tinted */
+  .season-btn .nm {
+    padding: .12em .5em .18em;
+    background: linear-gradient(transparent 12%, rgba(250, 204, 21, .6) 12% 92%, transparent 92%);
+    border-radius: .3em;
+    transform: rotate(-.8deg);
+  }
+  .season-btn .ln { height: 3px; }
+  .cal-board.has-season .cal-cells i:not(.void) { background: rgba(190, 51, 36, .055); }
   .season-btn .when {
     font: 700 .7rem/1 var(--grot); letter-spacing: .07em; text-transform: uppercase;
     color: var(--line); white-space: nowrap;
@@ -1095,6 +1104,8 @@
     'Workshop':  { ring: 'var(--ginkgo)',   tint: '#E3AA2C' },
     'Fun event': { ring: 'var(--marker)',   tint: '#DE6B37' },
   };
+  // The five flagship events always get a photo, even when they run a single day
+  const FLAGSHIP = new Set(['Stupid Hackathon', 'Competitive designing', 'Jailbreak', 'CTF', 'Overnight hackathon']);
   const OTHER = { ring: 'var(--oak)', tint: '#C9935C' };
   // Photos from past seasons, stuck onto boxed events in turn
   const PHOTOS = ['aoc_1.jpg', 'aoc_12.jpg', 'aoc_3.jpg', 'aoc_14.jpg', 'aoc_2.jpg', 'aoc_13.jpg', 'aoc_10.jpg'].map((f) => '/img/events/' + f);
@@ -1121,7 +1132,7 @@
       .map((e) => {
         const t = TAGS[e.tag] || OTHER;
         const len = days(e.a, e.b) + 1;
-        const kind = len >= 7 ? 'season' : (len > 1 || e.tag === 'Fun event') ? 'box' : 'note';
+        const kind = len >= 7 ? 'season' : (len > 1 || e.tag === 'Fun event' || FLAGSHIP.has(e.name)) ? 'box' : 'note';
         return {
           ...e, ...t, kind,
           photo: kind === 'box' ? PHOTOS[photo++ % PHOTOS.length] : null,
@@ -1217,6 +1228,7 @@
 
     const board = el('div', 'cal-board');
     board.setAttribute('role', 'group');
+    if (season.length) board.classList.add('has-season');
     board.setAttribute('aria-label', `Calendar, ${A.getDate()} ${MONTHS[A.getMonth()]} to ${B.getDate()} ${MONTHS[B.getMonth()]}`);
     const dows = el('div', 'cal-dows');
     dows.setAttribute('aria-hidden', 'true');

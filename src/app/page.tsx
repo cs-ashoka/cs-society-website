@@ -183,28 +183,25 @@ export default function Home() {
         </div>
       </section>
 
-            {/* Legacy site */}
+      {/* Featured Projects */}
       <section className="py-20 px-6 bg-surface-container-low border-t border-border">
-        <div className="max-w-5xl mx-auto flex items-center justify-between flex-wrap gap-4">
-          <div>
-            <span
-              className={`${jetbrainsMono.className} text-primary uppercase tracking-widest text-xs block mb-2`}
+        <div className="max-w-5xl mx-auto">
+          <div className="flex items-end justify-between flex-wrap gap-4">
+            <div>
+              <span
+                className={`${jetbrainsMono.className} text-primary uppercase tracking-widest text-xs block mb-2`}
+              >
+                Built by members
+              </span>
+              <h2 className="text-3xl font-semibold">Featured Projects</h2>
+            </div>
+            <a
+              href="/projects"
+              className={`${jetbrainsMono.className} text-on-surface hover:text-primary uppercase tracking-widest text-sm transition-colors flex items-center gap-2`}
             >
-              History
-            </span>
-            <h2 className="text-3xl font-semibold mb-2">Looking for the old site?</h2>
-            <p className="text-on-surface-variant text-sm max-w-md">
-              We rebuilt CS Soc.dev in 2026, but the previous version is still archived and browsable if you want a look back.
-            </p>
+              View all →
+            </a>
           </div>
-          
-            <a href="https://cssoc-archive.vercel.app" 
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`${jetbrainsMono.className} border border-on-surface text-on-surface px-6 py-3 uppercase tracking-widest text-sm rounded hover:bg-surface transition-colors whitespace-nowrap`}
-          >
-            View old site
-          </a>
         </div>
       </section>
 

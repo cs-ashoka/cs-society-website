@@ -831,7 +831,8 @@
 // ---------- Calendar ----------
 (() => {
   const YEAR = 2026;
-  // From the Notion calendar. Dates are inclusive; "end" is omitted for single days.
+  // Fallback copy of the Notion calendar, used until (or unless) /api/aoc-events answers.
+  // Dates are inclusive; "end" is omitted for single days.
   const EVENTS = [
     { name: 'The main hackathon',     start: '2026-10-19', end: '2026-11-19', tag: 'Dev' },
     { name: 'Mess Stall 1',           start: '2026-10-21' },
@@ -854,7 +855,9 @@
 
   const day = (iso) => { const [y, m, d] = iso.split('-').map(Number); return new Date(y, m - 1, d); };
   const key = (d) => d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
-  const evs = EVENTS.map((e) => ({ ...e, a: day(e.start), b: day(e.end || e.start), color: COLORS[e.tag] || 'var(--oak)' }));
+  const build = (list) => list.map((e) => ({ ...e, a: day(e.start), b: day(e.end || e.start), color: COLORS[e.tag] || 'var(--oak)' }));
+  let evs = build(EVENTS);
+  let month = 9;
   const fmt = (d) => `${DOW[(d.getDay() + 6) % 7]} ${d.getDate()} ${MONTHS[d.getMonth()].slice(0, 3)}`;
   const range = (e) => e.end ? `${fmt(e.a)} – ${fmt(e.b)}` : fmt(e.a);
 
@@ -877,7 +880,8 @@
     return b;
   }
 
-  function render(month) {
+  function render(m) {
+    month = m;
     grid.replaceChildren();
     const first = new Date(YEAR, month, 1), last = new Date(YEAR, month + 1, 0);
     const start = new Date(first); start.setDate(1 - ((first.getDay() + 6) % 7));
@@ -959,6 +963,16 @@
   btns.forEach((b) => b.addEventListener('click', () => render(+b.dataset.m)));
   const t = new Date();
   render(t.getFullYear() === YEAR && t.getMonth() === 10 ? 10 : 9);
+
+  // Live events from Notion; on any failure the fallback list above stays on screen
+  fetch('/api/aoc-events')
+    .then((r) => (r.ok ? r.json() : Promise.reject()))
+    .then((d) => {
+      if (!Array.isArray(d.events) || !d.events.length) return;
+      evs = build(d.events);
+      render(month);
+    })
+    .catch(() => {});
 })();
 </script>
 </body>

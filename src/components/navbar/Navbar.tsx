@@ -7,14 +7,14 @@ import cn from "@/utils/cn";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { AocNavLink, MapleLeaf, AOC_HREF } from "./AocNavLink";
 
+// `featured` links are the society's main work, so they get stronger styling in the bar.
 const navLinks = [
-  { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
-  { label: "Events", href: "/events" },
-  { label: "Team", href: "/team" },
-  { label: "Projects", href: "/projects" },
-  { label: "Publications", href: "/publications" },
-  { label: "Resources", href: "/resources" },
+  { label: "Home", href: "/", featured: false },
+  { label: "Publications", href: "/publications", featured: true },
+  { label: "Projects", href: "/projects", featured: true },
+  { label: "Resources", href: "/resources", featured: true },
+  { label: "Events", href: "/events", featured: false },
+  { label: "Team", href: "/team", featured: false },
 ];
 
 export function Navbar() {
@@ -41,7 +41,8 @@ export function Navbar() {
                 <a
                   href={link.href}
                   className={cn(
-                    "group relative text-on-surface-variant hover:text-primary transition-colors",
+                    "group relative transition-colors hover:text-primary",
+                    link.featured ? "text-on-surface font-semibold" : "text-on-surface-variant/70",
                     isActive && "text-primary"
                   )}
                 >
@@ -100,7 +101,8 @@ export function Navbar() {
                   href={link.href}
                   onClick={() => setOpen(false)}
                   className={cn(
-                    "inline-block border-b-2 border-transparent text-on-surface-variant hover:text-primary transition-colors",
+                    "inline-block border-b-2 border-transparent hover:text-primary transition-colors",
+                    link.featured ? "text-on-surface font-semibold" : "text-on-surface-variant",
                     isActive && "text-primary border-primary"
                   )}
                 >

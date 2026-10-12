@@ -194,7 +194,7 @@ export default function Home() {
             </span>
             <h2 className="text-3xl font-semibold mb-2">Looking for the old site?</h2>
             <p className="text-on-surface-variant text-sm max-w-md">
-              We rebuilt AUCSS.dev in 2026, but the previous version is still archived and browsable if you want a look back.
+              We rebuilt CS Soc.dev in 2026, but the previous version is still archived and browsable if you want a look back.
             </p>
           </div>
           

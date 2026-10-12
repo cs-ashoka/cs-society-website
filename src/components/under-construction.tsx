@@ -62,7 +62,7 @@ export function UnderConstruction({ title = "this page." }: { title?: string }) 
     let isPlaying = false;
     let isGameOver = false;
     let score = 0;
-    let highScore = parseInt(localStorage.getItem("aucss_dino_hi") || "0", 10);
+    let highScore = parseInt(localStorage.getItem("cs_soc_dino_hi") || "0", 10);
     highScoreEl.textContent = String(highScore).padStart(5, "0");
 
     let gameSpeed = 6;
@@ -301,7 +301,7 @@ export function UnderConstruction({ title = "this page." }: { title?: string }) 
 
       if (score > highScore) {
         highScore = score;
-        localStorage.setItem("aucss_dino_hi", String(highScore));
+        localStorage.setItem("cs_soc_dino_hi", String(highScore));
         highScoreEl.textContent = String(highScore).padStart(5, "0");
       }
 

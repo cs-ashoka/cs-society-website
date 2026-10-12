@@ -6,7 +6,7 @@ A beginner-friendly tour of this codebase. If you've never built a website befor
 
 ## 1. What is this project?
 
-This is the official website of the **CS Society at Ashoka University** (AUCSS). It's a multi-page website with a home page, an events archive, a team page, and more.
+This is the official website of the **CS Society at Ashoka University** (CS Soc). It's a multi-page website with a home page, an events archive, a team page, and more.
 
 It is built with these tools. Don't worry if you don't know them yet; each is explained below.
 

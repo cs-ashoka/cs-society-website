@@ -52,7 +52,7 @@ const verticals = [
 export default function AboutPage() {
   return (
     <main className="min-h-screen bg-background">
-      <PageHeader eyebrow="About // AUCSS" title="About the Society">
+      <PageHeader eyebrow="About // CS Soc" title="About the Society">
         A student-run community at Ashoka University for anyone into code, computers, and building things together.
       </PageHeader>
 

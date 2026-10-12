@@ -469,7 +469,7 @@ export function UnderConstruction({ title = "this page." }: { title?: string }) 
             </div>
             <span className={`${jetbrainsMono.className} text-xs text-on-surface-variant font-medium tracking-wide flex items-center gap-1.5`}>
               <MdTerminal className="text-[14px]" />
-              aucss-runner — 60fps
+              cs-soc-runner — 60fps
             </span>
           </div>
           <div className={`${jetbrainsMono.className} flex items-center gap-4 sm:gap-6 text-xs sm:text-sm`}>
@@ -494,7 +494,7 @@ export function UnderConstruction({ title = "this page." }: { title?: string }) 
             <div className="w-12 h-12 rounded-xl bg-primary text-on-primary flex items-center justify-center mb-3 shadow-sm">
               <MdSportsEsports className="text-2xl" />
             </div>
-            <p className="font-bold text-xl sm:text-2xl text-on-surface mb-1">AUCSS Infinite Runner</p>
+            <p className="font-bold text-xl sm:text-2xl text-on-surface mb-1">CS Soc Infinite Runner</p>
             <p className="text-xs sm:text-sm text-on-surface-variant max-w-sm mb-5">
               Dodge recursive loops, syntax glitches, and failing servers.
             </p>

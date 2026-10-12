@@ -12,7 +12,7 @@ export function Footer() {
     <footer className="border-t border-border bg-surface-container-low">
       <div className="max-w-5xl mx-auto px-6 py-10 flex flex-row justify-between items-center gap-4">
         <div className="text-left">
-          <div className="text-sm md:text-xl font-black tracking-tight mb-1">AUCSS</div>
+          <div className="text-sm md:text-xl font-black tracking-tight mb-1">CS Soc</div>
           <p className="text-on-surface-variant text-[10px] md:text-sm">
             © {new Date().getFullYear()} CS Society. All rights reserved.
           </p>

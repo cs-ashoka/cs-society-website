@@ -65,7 +65,7 @@ export default function Home() {
           </div>
           <div className="md:col-span-7">
             <p className="text-on-surface-variant mb-4 leading-relaxed">
-              AUCSS operates under a formal constitution that ensures transparency, academic integrity, and democratic representation for every CS student at Ashoka.
+              CS Soc operates under a formal constitution that ensures transparency, academic integrity, and democratic representation for every CS student at Ashoka.
             </p>
             <p className="text-on-surface-variant mb-6 leading-relaxed text-sm">
               Our governing document outlines the society&apos;s structure, election process, and member rights. We encourage everyone, members and prospective members alike, to read it.

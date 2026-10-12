@@ -4,7 +4,7 @@ type CreditPerson = { name: string; href?: string };
 
 const credits: { role: string; names: CreditPerson[] }[] = [
   { role: "Designed by", names: [{ name: "Parth Agarwal", href: "https://parthagarwal.vercel.app/" }] },
-  { role: "Website team", names: [{ name: "Savyam" }, { name: "Ananya" }] },
+  { role: "Website team", names: [{ name: "Savyam" }, { name: "Ananya" }, { name: "Suryansh" }] },
 ];
 
 export function Footer() {

@@ -5,7 +5,10 @@ import { MdCheckCircleOutline } from "react-icons/md";
 import { jetbrainsMono } from "@/utils/fonts";
 import cn from "@/utils/cn";
 
-type QueryType = "office_hours" | "doubt";
+// Web3Forms access key. Public by design; submissions go to the inbox it was created with.
+const WEB3FORMS_KEY = "2d8ef53d-b2c9-4c6c-a91d-766e89a4fa32";
+
+type QueryType ="office_hours" | "doubt";
 type Status = "idle" | "sending" | "sent" | "error";
 
 const TOPICS = [
@@ -30,17 +33,32 @@ export function QueryForm() {
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
-    const data = Object.fromEntries(new FormData(form));
+    const data = Object.fromEntries(new FormData(form)) as Record<string, string>;
+    if (data.website) return; // honeypot
+    const kind = type === "office_hours" ? "Office hours booking" : "Doubt";
     setStatus("sending");
     setError("");
     try {
-      const res = await fetch("/api/cs-query", {
+      const res = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data, type }),
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_KEY,
+          subject: `[CS Query] ${kind}: ${data.topic}`,
+          from_name: "CS Query",
+          replyto: data.email,
+          Type: kind,
+          Name: data.name,
+          Email: data.email,
+          Topic: data.topic,
+          ...(type === "office_hours" ? { Availability: data.slots } : {}),
+          Message: data.message,
+        }),
       });
       const json = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(json.error || "Something went wrong.");
+      if (!res.ok || !json.success) {
+        throw new Error("Couldn't send right now. Try again, or email cs.society@ashoka.edu.in.");
+      }
       form.reset();
       setStatus("sent");
     } catch (err) {

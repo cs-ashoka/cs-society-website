@@ -568,6 +568,17 @@
     background: var(--maple); color: var(--paper-light);
   }
   .dlg-body p.dlg-note { margin: 1em 0 0; font-size: .95rem; color: var(--ink-soft); }
+  .dlg-about { margin: 0 0 1em; font-size: .98rem; line-height: 1.5; color: var(--line); }
+  .dlg-facts { display: grid; grid-template-columns: auto 1fr; gap: .35em .9em; margin: 0 0 1.2em; padding: .9em 0 0; border-top: 2px dashed rgba(59, 36, 20, .25); font-size: .92rem; }
+  .dlg-facts dt { font: 700 .68rem/1.9 var(--grot); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
+  .dlg-facts dd { margin: 0; }
+  .dlg-link {
+    display: inline-block; padding: .75em 1.1em;
+    font: 700 .74rem/1 var(--grot); letter-spacing: .08em; text-transform: uppercase; text-decoration: none;
+    color: var(--card); background: var(--marker); transition: background .2s;
+  }
+  .dlg-link:hover { background: var(--line); }
+  .dlg-about[hidden], .dlg-facts[hidden], .dlg-link[hidden], .dlg-soon[hidden], .dlg-note[hidden] { display: none; }
   .dlg-close {
     position: absolute; top: -12px; right: -12px; z-index: 2;
     display: grid; place-items: center; width: 40px; height: 40px; padding: 0; cursor: pointer;
@@ -655,6 +666,9 @@
       <span class="dlg-tag"></span>
       <h3 id="dlg-title"></h3>
       <p class="dlg-date"></p>
+      <p class="dlg-about" hidden></p>
+      <dl class="dlg-facts" hidden></dl>
+      <a class="dlg-link" hidden target="_blank" rel="noopener noreferrer"></a>
       <span class="dlg-soon">Coming soon</span>
       <p class="dlg-note">Details for this event are on their way.</p>
     </div>
@@ -1085,21 +1099,79 @@
   // Fallback copy of the Notion calendar, used until (or unless) /api/aoc-events answers.
   // Dates are inclusive; "end" is omitted for single days.
   const EVENTS = [
-    { name: 'The main hackathon',     start: '2026-10-19', end: '2026-11-19', tag: 'Dev' },
-    { name: 'Mess Stall 1',           start: '2026-10-21' },
-    { name: 'Open AI workshop',       start: '2026-10-21' },
-    { name: 'Competitive designing',  start: '2026-10-23', tag: 'Dev' },
-    { name: 'Overnight hackathon',    start: '2026-10-24' },
-    { name: 'Real Steel',             start: '2026-10-26', tag: 'Fun event' },
-    { name: 'Claude Workshop',        start: '2026-10-27', tag: 'Workshop' },
-    { name: 'Stupid Hackathon',       start: '2026-10-30', end: '2026-10-31', tag: 'Dev' },
-    { name: 'Hackathon checkpoint 1', start: '2026-11-01' },
-    { name: 'CTF',                    start: '2026-11-03', end: '2026-11-04', tag: 'Dev' },
-    { name: 'Tech Jeopardy',          start: '2026-11-05', tag: 'Fun event' },
-    { name: 'Jailbreak',              start: '2026-11-10', end: '2026-11-11', tag: 'Dev' },
-    { name: 'Ra.One screening',       start: '2026-11-13', tag: 'Fun event' },
-    { name: 'Dev Showcase',           start: '2026-11-17', tag: 'Dev' },
+    { name: 'The main hackathon',      start: '2026-11-02', end: '2026-11-19', tag: 'Dev' },
+    { name: 'Mess Stall 1',            start: '2026-10-19' },
+    { name: 'Open AI workshop',        start: '2026-10-21', tag: 'Workshop' },
+    { name: 'Competitive designing',   start: '2026-10-23', tag: 'Dev' },
+    { name: 'Overnight hackathon',     start: '2026-10-24', tag: 'Dev' },
+    { name: 'Big Hero 6 screening',    start: '2026-10-26', tag: 'Fun event' },
+    { name: 'Claude Workshop',         start: '2026-10-27', tag: 'Workshop' },
+    { name: 'Stupid Hackathon',        start: '2026-10-30', end: '2026-10-31', tag: 'Dev' },
+    { name: 'Hackathon checkpoint 1',  start: '2026-11-01' },
+    { name: 'CTF',                     start: '2026-11-03', end: '2026-11-04', tag: 'Dev' },
+    { name: 'Tech Jeopardy',           start: '2026-11-05', tag: 'Fun event' },
+    { name: 'Jailbreak',               start: '2026-11-10', end: '2026-11-11', tag: 'Dev' },
+    { name: 'Ra.One screening',        start: '2026-11-13', tag: 'Fun event' },
+    { name: 'Dev Showcase',            start: '2026-11-17', tag: 'Dev' },
   ];
+  // What the pop-up says about each event, matched on name (lower-case). The Notion feed only carries
+  // name, dates and tag, so this is merged in on top of it. "as" renames an event; "photo" overrides the past-season photo.
+  const SCREENING = 'A relaxed evening screening hosted by the CS Society. Grab a seat, settle in and watch it together.';
+  const DETAILS = {
+    'the main hackathon': {
+      about: 'The main event of Autumn of Code: a hackathon that runs from 2 to 19 November. Form a team, pick a problem and build it through the season, with a checkpoint along the way.',
+    },
+    'mess stall 1': {
+      about: 'Come play Fireboy and Watergirl at our stall.',
+    },
+    'open ai workshop': {
+      about: 'Learn how to build skills and agents in ChatGPT. Come for free Codex credits and food.',
+      facts: [['Perks', 'Free Codex credits and food']],
+    },
+    'competitive designing': {
+      about: 'The task is simple: you get a prompt and 24 hours to design a static website based on it. Bring your creativity, experiment with your ideas and compete for a cash prize.',
+      facts: [
+        ['Date', '23 October (prompt released on 22 October)'],
+        ['Time', '24 hours to design the static website'],
+        ['Team size', '1 to 2 members'],
+        ['Prize', '₹2,000'],
+      ],
+      link: ['Register', 'https://app.youform.com/forms/0wzgbcrg'],
+    },
+    'overnight hackathon': {
+      about: 'An overnight DSA hackathon with Professor Aalok Thakkar. It starts with a short session on DSA, then you build your project through the night.',
+      facts: [['With', 'Professor Aalok Thakkar']],
+      link: ['Fill the interest form', 'https://forms.gle/yZj5MBsTuY75MwULA'],
+    },
+    'big hero 6 screening': {
+      as: 'Big Hero 6 screening',
+      about: SCREENING,
+      facts: [['Venue', 'AC03-003']],
+      photo: '/autumn-of-code/assets/big-hero-6.jpg',
+    },
+    'real steel': { as: 'Big Hero 6 screening', ref: 'big hero 6 screening' },
+    'claude workshop': {
+      about: 'Learn how to build ready-to-ship websites in a matter of hours.',
+    },
+    'stupid hackathon': {
+      about: 'A competition to build something stupid, Halloween themed. The sillier the idea, the better.',
+    },
+    'tech jeopardy': {
+      about: 'The leaders of the top tech clubs come together to face off in a game of Family Feud.',
+    },
+    'jailbreak': {
+      about: 'An introduction to red teaming: the practice of attacking a system on purpose to find where it breaks, so it can be fixed before someone else finds out. Learn how it is done and try it yourself.',
+    },
+    'ra.one screening': {
+      about: SCREENING,
+      facts: [['Venue', 'AC03-003']],
+      photo: '/autumn-of-code/assets/ra-one.jpg',
+    },
+    'dev showcase': {
+      about: 'A showcase of all the dev projects built by the team.',
+    },
+  };
+
   // ring: the marker circling the date; tint: the colour a photo is printed in
   const TAGS = {
     'Dev':       { ring: 'var(--pine-ink)', tint: '#6A86B4' },
@@ -1128,7 +1200,11 @@
   function build(list) {
     let photo = 0;
     return list
-      .map((e) => ({ ...e, a: day(e.start), b: day(e.end || e.start) }))
+      .map((e) => {
+        let d = DETAILS[e.name.toLowerCase()] || {};
+        if (d.ref) d = { ...DETAILS[d.ref], ...d };
+        return { ...e, name: d.as || e.name, about: d.about, facts: d.facts, link: d.link, photoSrc: d.photo, a: day(e.start), b: day(e.end || e.start) };
+      })
       .filter((e) => e.b >= A && e.a <= B)
       .sort((x, y) => x.a - y.a || y.b - x.b)
       .map((e) => {
@@ -1137,7 +1213,7 @@
         const kind = len >= 7 ? 'season' : (len > 1 || e.tag === 'Fun event' || FLAGSHIP.has(e.name)) ? 'box' : 'note';
         return {
           ...e, ...t, kind,
-          photo: kind === 'box' ? PHOTOS[photo++ % PHOTOS.length] : null,
+          photo: kind === 'box' ? (photo++, e.photoSrc || PHOTOS[(photo - 1) % PHOTOS.length]) : null,
           tilt: ((photo % 3) - 1) * 0.8 + 'deg',
           da: e.a < A ? A : e.a, db: e.b > B ? B : e.b,
         };
@@ -1184,6 +1260,7 @@
     f.style.setProperty('--tint', e.tint);
     const img = el('img');
     img.src = e.photo; img.alt = ''; img.loading = 'lazy'; img.decoding = 'async';
+    img.onerror = () => { img.onerror = null; img.src = PHOTOS[0]; };
     f.append(img);
     return f;
   }
@@ -1280,6 +1357,7 @@
           b.style.setProperty('--tilt', e.tilt);
           const img = el('img');
           img.src = e.photo; img.alt = ''; img.loading = 'lazy'; img.decoding = 'async';
+          img.onerror = () => { img.onerror = null; img.src = PHOTOS[0]; };
           b.append(img, el('span', 'lbl', e.name));
         } else {
           b = evButton(e, 'cal-note');
@@ -1335,11 +1413,21 @@
     dlg.querySelector('.dlg-tag').textContent = e.tag || 'Event';
     dlg.querySelector('h3').textContent = e.name;
     dlg.querySelector('.dlg-date').textContent = range(e);
+    const about = dlg.querySelector('.dlg-about'), facts = dlg.querySelector('.dlg-facts');
+    const link = dlg.querySelector('.dlg-link');
+    about.hidden = !e.about; about.textContent = e.about || '';
+    facts.hidden = !e.facts; facts.replaceChildren();
+    (e.facts || []).forEach(([k, v]) => { facts.append(el('dt', '', k), el('dd', '', v)); });
+    link.hidden = !e.link;
+    if (e.link) { link.textContent = e.link[0]; link.href = e.link[1]; }
+    dlg.querySelector('.dlg-soon').hidden = dlg.querySelector('.dlg-note').hidden = !!e.about;
     const ph = dlg.querySelector('.dlg-photo');
     ph.hidden = !e.photo;
     if (e.photo) {
       ph.style.setProperty('--tint', e.tint);
-      ph.querySelector('img').src = e.photo;
+      const pi = ph.querySelector('img');
+      pi.onerror = () => { pi.onerror = null; pi.src = PHOTOS[0]; };
+      pi.src = e.photo;
     }
     dlg.showModal();
   }

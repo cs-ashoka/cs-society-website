@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { jetbrainsMono } from "@/utils/fonts";
-import { publications, type Publication } from "./data";
+import type { Publication } from "./data";
 
 // The shelf runs Oct 2026 to May 2027.
 const SHELF = [
@@ -35,17 +35,17 @@ function shuffle<T>(items: T[]): T[] {
   return a;
 }
 
-export function Shelf() {
+export function Shelf({ items: publications }: { items: Publication[] }) {
   const [active, setActive] = useState<number | null>(null);
   // Server render keeps source order; the client reshuffles after mount to avoid hydration mismatch.
   const [order, setOrder] = useState<Publication[]>(publications);
-  useEffect(() => setOrder(shuffle(publications)), []);
+  useEffect(() => setOrder(shuffle(publications)), [publications]);
 
   const counts = useMemo(() => {
     const c = Array(SHELF.length).fill(0) as number[];
     publications.forEach((p) => { const i = slotOf(p); if (i >= 0) c[i]++; });
     return c;
-  }, []);
+  }, [publications]);
 
   const inShelf = order.filter((p) => slotOf(p) >= 0);
   const visible = active === null ? inShelf : inShelf.filter((p) => slotOf(p) === active);

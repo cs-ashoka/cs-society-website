@@ -6,16 +6,16 @@ import { MdArrowForward } from "react-icons/md";
 
 const resources = [
   {
-    href: "/learningcs",
-    title: "Learning CS",
+    href: "/under-construction",
+    title: "CS Resources",
     description:
-      "learn more abt AI/ML, web dev, competitive programming and more",
+      "Useful CS resources to navigate CS academics: from first-year programming to AI/ML, web dev and competitive programming, curated by students who have been through it.",
   },
   {
-    href: "/internships",
-    title: "Internships",
+    href: "/under-construction",
+    title: "Project Opportunities",
     description:
-      "placeholder text",
+      "Find something real to build. Open-source work, research collaborations and student-led projects that turn what you learn in class into things you can show.",
   },
 ];
 
@@ -50,7 +50,7 @@ export default function Resources() {
       <section className="max-w-5xl mx-auto px-6 py-16 flex flex-col gap-6">
         {resources.map((item) => (
           <Link
-            key={item.href}
+            key={item.title}
             href={item.href}
             className="group block bg-surface border border-primary/30 rounded-xl p-6 md:p-8 card-glow"
           >

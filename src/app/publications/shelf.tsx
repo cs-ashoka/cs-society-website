@@ -99,8 +99,29 @@ export function Shelf() {
       {/* Loose, uneven grid */}
       <div className="columns-1 sm:columns-2 lg:columns-3 gap-5 [column-fill:_balance]">
         {visible.map((p, idx) => (
-          <Card key={p.id} p={p} size={SIZES[(idx * 5 + p.id.length) % SIZES.length]} />
+          p.embed ? <SubstackEmbed key={p.id} p={p} /> : <Card key={p.id} p={p} size={SIZES[(idx * 5 + p.id.length) % SIZES.length]} />
         ))}
+      </div>
+    </div>
+  );
+}
+
+function SubstackEmbed({ p }: { p: Publication }) {
+  // Substack's embed script only scans the page once on load, so re-add it after mount.
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://substack.com/embedjs/embed.js";
+    script.async = true;
+    script.charset = "utf-8";
+    document.body.appendChild(script);
+    return () => { script.remove(); };
+  }, []);
+  return (
+    <div className="mb-5 break-inside-avoid">
+      <div className="substack-post-embed">
+        <p lang="en">{p.embed!.title}</p>
+        <p>{p.embed!.subtitle}</p>
+        <a data-post-link href={p.href}>Read on Substack</a>
       </div>
     </div>
   );

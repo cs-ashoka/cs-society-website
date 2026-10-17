@@ -40,8 +40,11 @@ async function fetchSubstack(): Promise<Publication[]> {
 export async function getPublications(): Promise<Publication[]> {
   try {
     const posts = await fetchSubstack();
+    // A hand-written entry with the same link overrides the feed's date, so a post can be shelved under a different month.
+    const manual = new Map(publications.map((p) => [p.href, p]));
+    const merged = posts.map((p) => (manual.has(p.href) ? { ...p, date: manual.get(p.href)!.date } : p));
     const seen = new Set(posts.map((p) => p.href));
-    return [...posts, ...publications.filter((p) => !seen.has(p.href))];
+    return [...merged, ...publications.filter((p) => !seen.has(p.href))];
   } catch {
     return publications;
   }

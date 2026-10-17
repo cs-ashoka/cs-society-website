@@ -3,13 +3,10 @@ import { Analytics } from '@vercel/analytics/react';
 import Image from "next/image";
 import { Reveal } from "@/components/reveal";
 import { FillButton } from "@/components/fill-button";
-import { getSortedPostsData } from "@/lib/event-posts";
 import { MdDescription } from "react-icons/md";
 import { HomeFaq } from "@/components/home-faq";
 
 export default function Home() {
-  const recentEvents = getSortedPostsData().slice(0, 2);
-
   return (
     <main className={`${inter.className} min-h-screen bg-background`}>
       {/* Hero */}
@@ -134,58 +131,35 @@ export default function Home() {
             </a>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Reveal delayMs={0} className="group bg-surface border border-border p-4 rounded-xl card-glow">
-              <div className="relative overflow-hidden aspect-video rounded-lg mb-4 bg-inverse-surface flex items-center justify-center">
+          <Reveal className="block">
+            <a
+              href="/events/cs-mixer-2026"
+              className="group grid grid-cols-1 md:grid-cols-2 gap-6 bg-surface border border-border p-4 rounded-xl card-glow"
+            >
+              <div className="relative overflow-hidden aspect-video rounded-lg bg-inverse-surface flex items-center justify-center">
                 <span className={`${jetbrainsMono.className} text-white/40 text-xs uppercase tracking-widest`}>
                   CS Mixer 2026
                 </span>
                 <span className="absolute top-2 right-2 bg-primary text-on-primary text-[10px] px-2 py-1 uppercase tracking-widest">
-                  Save the Date
+                  Recap
                 </span>
               </div>
-              <h3 className="text-lg font-semibold mb-1">CS Mixer 2026</h3>
-              <p className="text-on-surface-variant text-sm mb-4">
-                An evening to meet the society, grab food, and find your next project partner. Details dropping soon.
-              </p>
-              <div className="pt-3 border-t border-border flex justify-between items-center">
-                <span className={`${jetbrainsMono.className} text-xs text-on-surface-variant uppercase`}>
-                  Date TBA
-                </span>
-                <span className="text-primary group-hover:translate-x-1 transition-transform">→</span>
-              </div>
-            </Reveal>
-
-            {recentEvents.map((event, i) => (
-              <Reveal
-                key={event.slug}
-                delayMs={(i + 1) * 100}
-                className="group bg-surface border border-border p-4 rounded-xl card-glow"
-              >
-                <div className="relative overflow-hidden aspect-video rounded-lg mb-4 bg-surface-container-low">
-                  {event.imgList?.[0] && (
-                    <Image
-                      src={event.imgList[0]}
-                      alt={event.title}
-                      fill
-                      unoptimized
-                      className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
-                    />
-                  )}
+              <div className="flex flex-col justify-between py-2">
+                <div>
+                  <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">CS Mixer 2026</h3>
+                  <p className="text-on-surface-variant text-sm leading-relaxed">
+                    Our first mixer of the year brought together 80+ students, nine professors and every tech club on campus. Read how the evening went.
+                  </p>
                 </div>
-                <h3 className="text-lg font-semibold mb-1">{event.title}</h3>
-                <p className="text-on-surface-variant text-sm mb-4">
-                  Catch up on how it went, and see what&apos;s next on the events page.
-                </p>
-                <div className="pt-3 border-t border-border flex justify-between items-center">
+                <div className="pt-3 mt-4 border-t border-border flex justify-between items-center">
                   <span className={`${jetbrainsMono.className} text-xs text-on-surface-variant uppercase`}>
-                    {event.date}
+                    Read the recap
                   </span>
                   <span className="text-primary group-hover:translate-x-1 transition-transform">→</span>
                 </div>
-              </Reveal>
-            ))}
-          </div>
+              </div>
+            </a>
+          </Reveal>
         </div>
       </section>
 

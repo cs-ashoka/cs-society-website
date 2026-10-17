@@ -24,9 +24,7 @@ export const revalidate = 86400;
 // Events from this academic year that have happened (or are about to) but
 // don't have a recap file yet. Each one shows as a red "recap coming" slot.
 // Once you add the event's .mdx file in src/eventposts/, delete it from here.
-const pendingRecaps = [
-  { title: "CS Mixer 2026", note: "Recap goes up after the event." },
-];
+const pendingRecaps: { title: string; note: string }[] = [];
 
 // The wall always shows at least this many slots, so it reads as a wall
 // that fills up over the year.

@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>AOC weekly story</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Archivo:wght@700;800&family=Silkscreen&display=swap" rel="stylesheet">
+<style>
+  /* Instagram story: 1080 x 1920 (9:16). Keep the top ~250px and bottom ~250px free of key content (UI overlays). */
+  :root {
+    --oak: #8B5A2B; --maple: #9B2226; --ginkgo: #CA8A04; --pine: #46546D;
+    --straw: #D4A373; --paper: #EDCB9F; --paper-light: #F6DDBA; --paper-deep: #D9AE7C; --bark: #3B2414;
+    --serif: "Libre Caslon Text", Georgia, serif;
+    --display: "Archivo", "Inter", sans-serif;
+    --pixel: "Silkscreen", monospace;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1080px; height: 1920px; background: #222; }
+  .story {
+    position: relative; width: 1080px; height: 1920px; overflow: hidden;
+    background: radial-gradient(120% 85% at 50% 30%, var(--paper-light) 0%, var(--paper) 45%, var(--paper-deep) 100%);
+    color: var(--maple); font-family: var(--serif);
+    padding: 180px 72px 190px; display: flex; flex-direction: column;
+  }
+  .story::before { /* paper grain */
+    content: ""; position: absolute; inset: 0; opacity: .5; pointer-events: none;
+    background-image: radial-gradient(rgba(139,90,43,.18) 1px, transparent 1.4px); background-size: 14px 14px;
+  }
+  .leaf { position: absolute; font-size: 150px; opacity: .13; transform: rotate(var(--r)); }
+
+  .kicker { font-family: var(--pixel); font-size: 30px; letter-spacing: .12em; color: var(--oak); text-transform: uppercase; }
+  .title { font-family: var(--display); font-weight: 800; font-size: 80px; line-height: .98; letter-spacing: -.02em; margin-top: 18px; text-transform: uppercase; }
+  .title em { font-family: var(--serif); font-style: italic; font-weight: 400; text-transform: none; display: block; font-size: 54px; letter-spacing: 0; margin-top: 8px; color: var(--oak); }
+  .range { margin-top: 20px; display: inline-block; align-self: flex-start; font-family: var(--pixel); font-size: 32px; background: var(--maple); color: var(--paper-light); padding: 12px 22px; }
+
+  .blocks { flex: 1; margin-top: 34px; display: flex; flex-direction: column; gap: 16px; min-height: 0; }
+  .label { font-family: var(--pixel); font-size: 24px; letter-spacing: .14em; text-transform: uppercase; color: var(--oak); display: flex; align-items: center; gap: 16px; }
+  .label::after { content: ""; flex: 1; height: 3px; background: repeating-linear-gradient(90deg, var(--oak) 0 10px, transparent 10px 18px); opacity: .6; }
+  .flagships { display: flex; flex-direction: column; gap: 20px; }
+  .minors { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+  .block { position: relative; border: 5px solid var(--c); background: var(--bg); color: var(--fg); box-shadow: 10px 10px 0 var(--c); }
+  .block .date { font-family: var(--pixel); text-transform: uppercase; }
+  .block .tag { font-family: var(--pixel); text-transform: uppercase; }
+  .block .name { font-family: var(--display); font-weight: 800; text-transform: uppercase; letter-spacing: -.01em; }
+  .block .note { font-family: var(--serif); font-style: italic; }
+
+  .big { padding: 28px 38px 30px; }
+  .big .top { display: flex; justify-content: space-between; align-items: center; }
+  .big .date { font-size: 30px; }
+  .big .tag { font-size: 22px; padding: 7px 14px; background: var(--fg); color: var(--bg); }
+  .big .name { font-size: 80px; line-height: .95; margin-top: 14px; }
+  .big .note { font-size: 30px; line-height: 1.25; margin-top: 12px; opacity: .92; }
+
+  .small { padding: 22px 26px 24px; background: var(--paper-light); color: var(--bark); --c: var(--oak); box-shadow: 6px 6px 0 var(--c); border-width: 4px; }
+  .small .date { font-size: 24px; color: var(--c); }
+  .small .name { font-size: 38px; line-height: 1; margin-top: 12px; color: var(--maple); }
+  .small .tag { font-size: 18px; margin-top: 12px; color: var(--oak); }
+
+  /* colour themes by event type, same as the AOC calendar */
+  .t-dev      { --c: var(--maple);  --bg: var(--maple);  --fg: var(--paper-light); }
+  .t-workshop { --c: var(--ginkgo); --bg: var(--ginkgo); --fg: var(--bark); }
+  .t-fun      { --c: #DE6B37;       --bg: #DE6B37;       --fg: var(--bark); }
+  .t-other    { --c: var(--pine);   --bg: var(--pine);   --fg: var(--paper-light); }
+  .small.t-dev { --c: var(--maple); } .small.t-workshop { --c: var(--ginkgo); } .small.t-fun { --c: #DE6B37; } .small.t-other { --c: var(--pine); }
+
+  .foot { margin-top: 24px; display: flex; justify-content: space-between; align-items: flex-end; }
+  .foot .cta { font-family: var(--serif); font-style: italic; font-size: 34px; color: var(--oak); line-height: 1.25; }
+  .foot .cta b { font-style: normal; font-family: var(--pixel); font-size: 28px; color: var(--maple); display: block; margin-bottom: 6px; letter-spacing: .06em; }
+  .foot .by { font-family: var(--pixel); font-size: 22px; color: var(--oak); text-align: right; line-height: 1.5; }
+</style>
+</head>
+<body>
+<div class="story" id="story"></div>
+
+<script>
+/* ============ EDIT THIS EACH WEEK ============
+   flagship: big blocks. minor: small blocks.
+   theme: dev | workshop | fun | other   (matches the calendar colours)
+   note (optional, flagship only): one short line. */
+const WEEK = {
+  number: 1,
+  range: "19 – 25 Oct",
+  flagship: [
+    { date: "Fri 23 Oct", name: "Competitive Designing", theme: "dev", tag: "Dev",
+      note: "24 hours. One prompt. Design the best static website." },
+    { date: "Sat 24 Oct", name: "Overnight Hackathon",   theme: "dev", tag: "Dev",
+      note: "A DSA hackathon with Prof. Aalok Thakkar. Build through the night." },
+  ],
+  minor: [
+    { date: "Mon 19 Oct", name: "Mess Stall 1",     theme: "other",    tag: "Stall" },
+    { date: "Wed 21 Oct", name: "Open AI Workshop", theme: "workshop", tag: "Workshop" },
+  ],
+  cta: ["Full calendar", "Autumn of Code page, link in bio"],
+  by: ["CS SOCIETY"],
+};
+/* ============================================= */
+
+const esc = (s) => String(s).replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+const big = (e) => `
+  <div class="block big t-${e.theme}">
+    <div class="top"><span class="date">${esc(e.date)}</span><span class="tag">${esc(e.tag)}</span></div>
+    <div class="name">${esc(e.name)}</div>
+    ${e.note ? `<div class="note">${esc(e.note)}</div>` : ""}
+  </div>`;
+const small = (e) => `
+  <div class="block small t-${e.theme}">
+    <div class="date">${esc(e.date)}</div>
+    <div class="name">${esc(e.name)}</div>
+    <div class="tag">${esc(e.tag)}</div>
+  </div>`;
+
+document.getElementById("story").innerHTML = `
+  <span class="leaf" style="--r:-20deg;top:120px;right:-30px">🍁</span>
+  <span class="leaf" style="--r:25deg;bottom:300px;left:-40px">🍂</span>
+  <div class="kicker">Autumn of Code · Week ${WEEK.number}</div>
+  <h1 class="title">This is what is happening in AOC<em>this week</em></h1>
+  <div class="range">${esc(WEEK.range)}</div>
+  <div class="blocks">
+    <div class="label">Flagship events</div>
+    <div class="flagships">${WEEK.flagship.map(big).join("")}</div>
+    <div class="label" style="margin-top:14px">Also this week</div>
+    <div class="minors">${WEEK.minor.map(small).join("")}</div>
+  </div>
+  <div class="foot">
+    <div class="cta"><b>${esc(WEEK.cta[0])}</b>${esc(WEEK.cta[1])}</div>
+    <div class="by">${WEEK.by.map(esc).join("<br>")}</div>
+  </div>`;
+</script>
+</body>
+</html>

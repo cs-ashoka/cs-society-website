@@ -169,6 +169,33 @@ body {
   }
 }
 
+.dialog-fade-in {
+  animation: dialog-fade-in 0.25s ease-out both;
+}
+.dialog-slide-up {
+  animation: dialog-slide-up 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes dialog-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes dialog-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(2rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dialog-fade-in,
+  .dialog-slide-up {
+    animation: none;
+  }
+}
+
 /* ---------- Autumn of Code nav button ---------- */
 .aoc-link {
   --aoc-maple: #9B2226;

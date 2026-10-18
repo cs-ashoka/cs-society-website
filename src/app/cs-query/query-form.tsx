@@ -4,9 +4,8 @@ import { useState } from "react";
 import { MdCheckCircleOutline } from "react-icons/md";
 import { jetbrainsMono } from "@/utils/fonts";
 import cn from "@/utils/cn";
-
-// Web3Forms access key. Public by design; submissions go to the inbox it was created with.
-const WEB3FORMS_KEY = "2d8ef53d-b2c9-4c6c-a91d-766e89a4fa32";
+import { WEB3FORMS_KEY } from "@/lib/web3forms";
+import { fieldClass, labelClass, submitClass, textButtonClass } from "@/lib/form-styles";
 
 type QueryType ="office_hours" | "doubt";
 type Status = "idle" | "sending" | "sent" | "error";
@@ -20,10 +19,6 @@ const TOPICS = [
   "Research",
   "Something else",
 ];
-
-const label = `${jetbrainsMono.className} block text-[11px] uppercase tracking-[0.18em] text-secondary mb-2`;
-const field =
-  "w-full rounded-lg border border-border bg-background px-4 py-3 text-on-surface placeholder:text-on-surface-variant/60 outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20";
 
 export function QueryForm() {
   const [type, setType] = useState<QueryType>("office_hours");
@@ -79,7 +74,7 @@ export function QueryForm() {
         </p>
         <button
           onClick={() => setStatus("idle")}
-          className={`${jetbrainsMono.className} text-sm uppercase tracking-wide text-primary hover:underline`}
+          className={textButtonClass}
         >
           Send another
         </button>
@@ -115,11 +110,11 @@ export function QueryForm() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <div>
-          <label htmlFor="q-name" className={label}>Name</label>
-          <input id="q-name" name="name" required maxLength={100} autoComplete="name" className={field} />
+          <label htmlFor="q-name" className={labelClass}>Name</label>
+          <input id="q-name" name="name" required maxLength={100} autoComplete="name" className={fieldClass} />
         </div>
         <div>
-          <label htmlFor="q-email" className={label}>Email</label>
+          <label htmlFor="q-email" className={labelClass}>Email</label>
           <input
             id="q-email"
             name="email"
@@ -128,14 +123,14 @@ export function QueryForm() {
             maxLength={200}
             autoComplete="email"
             placeholder="you@ashoka.edu.in"
-            className={field}
+            className={fieldClass}
           />
         </div>
       </div>
 
       <div>
-        <label htmlFor="q-topic" className={label}>Topic</label>
-        <select id="q-topic" name="topic" required defaultValue="" className={field}>
+        <label htmlFor="q-topic" className={labelClass}>Topic</label>
+        <select id="q-topic" name="topic" required defaultValue="" className={fieldClass}>
           <option value="" disabled>Pick one</option>
           {TOPICS.map((t) => (
             <option key={t} value={t}>{t}</option>
@@ -145,20 +140,20 @@ export function QueryForm() {
 
       {type === "office_hours" && (
         <div>
-          <label htmlFor="q-slots" className={label}>When are you free?</label>
+          <label htmlFor="q-slots" className={labelClass}>When are you free?</label>
           <input
             id="q-slots"
             name="slots"
             required
             maxLength={300}
             placeholder="e.g. Tue/Thu after 4pm, Fri morning"
-            className={field}
+            className={fieldClass}
           />
         </div>
       )}
 
       <div>
-        <label htmlFor="q-message" className={label}>
+        <label htmlFor="q-message" className={labelClass}>
           {type === "office_hours" ? "What do you want to go over?" : "Your doubt"}
         </label>
         <textarea
@@ -172,7 +167,7 @@ export function QueryForm() {
               ? "A line or two so we can bring the right person."
               : "Be as specific as you can. Paste error messages or code if it helps."
           }
-          className={cn(field, "resize-y")}
+          className={cn(fieldClass, "resize-y")}
         />
       </div>
 
@@ -186,7 +181,7 @@ export function QueryForm() {
       <button
         type="submit"
         disabled={status === "sending"}
-        className={`${jetbrainsMono.className} self-start bg-primary text-on-primary px-6 py-3 text-sm uppercase tracking-wide rounded transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/30 disabled:opacity-60 disabled:hover:scale-100`}
+        className={submitClass}
       >
         {status === "sending" ? "Sending…" : type === "office_hours" ? "Request a slot" : "Send doubt"}
       </button>

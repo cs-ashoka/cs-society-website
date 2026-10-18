@@ -21,7 +21,7 @@
     position: relative; width: 1080px; height: 1920px; overflow: hidden;
     background: radial-gradient(120% 85% at 50% 30%, var(--paper-light) 0%, var(--paper) 45%, var(--paper-deep) 100%);
     color: var(--maple); font-family: var(--serif);
-    padding: 180px 72px 190px; display: flex; flex-direction: column;
+    padding: 170px 72px 180px; display: flex; flex-direction: column;
   }
   .story::before { /* paper grain */
     content: ""; position: absolute; inset: 0; opacity: .5; pointer-events: none;
@@ -34,11 +34,7 @@
   .title em { font-family: var(--serif); font-style: italic; font-weight: 400; text-transform: none; display: block; font-size: 54px; letter-spacing: 0; margin-top: 8px; color: var(--oak); }
   .range { margin-top: 20px; display: inline-block; align-self: flex-start; font-family: var(--pixel); font-size: 32px; background: var(--maple); color: var(--paper-light); padding: 12px 22px; }
 
-  .blocks { flex: 1; margin-top: 34px; display: flex; flex-direction: column; gap: 16px; min-height: 0; }
-  .label { font-family: var(--pixel); font-size: 24px; letter-spacing: .14em; text-transform: uppercase; color: var(--oak); display: flex; align-items: center; gap: 16px; }
-  .label::after { content: ""; flex: 1; height: 3px; background: repeating-linear-gradient(90deg, var(--oak) 0 10px, transparent 10px 18px); opacity: .6; }
-  .flagships { display: flex; flex-direction: column; gap: 20px; }
-  .minors { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .blocks { flex: 1; margin-top: 30px; display: flex; flex-direction: column; gap: 20px; min-height: 0; }
 
   .block { position: relative; border: 5px solid var(--c); background: var(--bg); color: var(--fg); box-shadow: 10px 10px 0 var(--c); }
   .block .date { font-family: var(--pixel); text-transform: uppercase; }
@@ -46,17 +42,25 @@
   .block .name { font-family: var(--display); font-weight: 800; text-transform: uppercase; letter-spacing: -.01em; }
   .block .note { font-family: var(--serif); font-style: italic; }
 
-  .big { padding: 28px 38px 30px; }
+  .big { padding: 26px 38px 28px; }
   .big .top { display: flex; justify-content: space-between; align-items: center; }
   .big .date { font-size: 30px; }
+  .big .venue { font-family: var(--pixel); font-size: 22px; margin-top: 14px; opacity: .9; }
   .big .tag { font-size: 22px; padding: 7px 14px; background: var(--fg); color: var(--bg); }
-  .big .name { font-size: 80px; line-height: .95; margin-top: 14px; }
-  .big .note { font-size: 30px; line-height: 1.25; margin-top: 12px; opacity: .92; }
+  .big .name { font-size: 62px; line-height: .95; margin-top: 12px; white-space: nowrap; }
+  .big .note { font-size: 29px; line-height: 1.25; margin-top: 12px; opacity: .92; }
 
-  .small { padding: 22px 26px 24px; background: var(--paper-light); color: var(--bark); --c: var(--oak); box-shadow: 6px 6px 0 var(--c); border-width: 4px; }
+  .small { display: flex; align-items: center; gap: 24px; padding: 20px 28px; background: var(--paper-light); color: var(--bark); box-shadow: 6px 6px 0 var(--c); border-width: 4px; }
+  .small .when { min-width: 190px; }
   .small .date { font-size: 24px; color: var(--c); }
-  .small .name { font-size: 38px; line-height: 1; margin-top: 12px; color: var(--maple); }
-  .small .tag { font-size: 18px; margin-top: 12px; color: var(--oak); }
+  .small .tag { font-size: 18px; margin-top: 8px; color: var(--oak); }
+  .small .name { font-size: 44px; line-height: 1; color: var(--maple); flex: 1; }
+  .small .venue { font-family: var(--pixel); font-size: 20px; color: var(--oak); margin-top: 8px; }
+
+  /* Reserved spot for the Instagram link sticker: drop the sticker on top of this in the app. */
+  .slot { border: 4px dashed currentColor; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-family: var(--pixel); font-size: 24px; letter-spacing: .08em; text-transform: uppercase; opacity: .85; }
+  .big .slot { height: 76px; margin-top: 22px; color: var(--fg); }
+  .small .slot { width: 270px; height: 64px; flex: none; color: var(--maple); }
 
   /* colour themes by event type, same as the AOC calendar */
   .t-dev      { --c: var(--maple);  --bg: var(--maple);  --fg: var(--paper-light); }
@@ -82,15 +86,20 @@
 const WEEK = {
   number: 1,
   range: "19 – 25 Oct",
-  flagship: [
-    { date: "Fri 23 Oct", name: "Competitive Designing", theme: "dev", tag: "Dev",
-      note: "24 hours. One prompt. Design the best static website." },
-    { date: "Sat 24 Oct", name: "Overnight Hackathon",   theme: "dev", tag: "Dev",
-      note: "A DSA hackathon with Prof. Aalok Thakkar. Build through the night." },
-  ],
-  minor: [
-    { date: "Mon 19 Oct", name: "Mess Stall 1",     theme: "other",    tag: "Stall" },
-    { date: "Wed 21 Oct", name: "Open AI Workshop", theme: "workshop", tag: "Workshop" },
+  /* One list, in date order. size: "big" (flagship) or "small" (minor).
+     theme: dev | workshop | fun | other. note: big only. venue: optional.
+     link: label for the link-sticker spot (leave out for no spot). */
+  events: [
+    { size: "small", date: "Mon 19 Oct", name: "Mess Stall 1", theme: "other", tag: "Stall" },
+    { size: "small", date: "Wed 21 Oct", name: "Open AI Workshop", theme: "workshop", tag: "Workshop",
+      link: "Sign up here" },
+    { size: "big", date: "Fri 23 Oct", name: "Competitive Designing", theme: "dev", tag: "Dev",
+      note: "24 hours. One prompt. Design the best static website.",
+      link: "Register here" },
+    { size: "big", date: "Sat 24 Oct", name: "Overnight Hackathon", theme: "dev", tag: "Dev",
+      note: "Prof. Aalok is building a coding language for Ashoka. Write basic programs in it. Food, movies and games all night.",
+      venue: "AC04-005",
+      link: "Fill the interest form" },
   ],
   cta: ["Full calendar", "Autumn of Code page, link in bio"],
   by: ["CS SOCIETY"],
@@ -98,17 +107,20 @@ const WEEK = {
 /* ============================================= */
 
 const esc = (s) => String(s).replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+const slot = (e) => e.link ? `<div class="slot">${esc(e.link)}</div>` : "";
 const big = (e) => `
   <div class="block big t-${e.theme}">
     <div class="top"><span class="date">${esc(e.date)}</span><span class="tag">${esc(e.tag)}</span></div>
     <div class="name">${esc(e.name)}</div>
     ${e.note ? `<div class="note">${esc(e.note)}</div>` : ""}
+    ${e.venue ? `<div class="venue">@ ${esc(e.venue)}</div>` : ""}
+    ${slot(e)}
   </div>`;
 const small = (e) => `
   <div class="block small t-${e.theme}">
-    <div class="date">${esc(e.date)}</div>
+    <div class="when"><div class="date">${esc(e.date)}</div><div class="tag">${esc(e.tag)}</div></div>
     <div class="name">${esc(e.name)}</div>
-    <div class="tag">${esc(e.tag)}</div>
+    ${slot(e)}
   </div>`;
 
 document.getElementById("story").innerHTML = `
@@ -117,12 +129,7 @@ document.getElementById("story").innerHTML = `
   <div class="kicker">Autumn of Code · Week ${WEEK.number}</div>
   <h1 class="title">This is what is happening in AOC<em>this week</em></h1>
   <div class="range">${esc(WEEK.range)}</div>
-  <div class="blocks">
-    <div class="label">Flagship events</div>
-    <div class="flagships">${WEEK.flagship.map(big).join("")}</div>
-    <div class="label" style="margin-top:14px">Also this week</div>
-    <div class="minors">${WEEK.minor.map(small).join("")}</div>
-  </div>
+  <div class="blocks">${WEEK.events.map((e) => (e.size === "big" ? big(e) : small(e))).join("")}</div>
   <div class="foot">
     <div class="cta"><b>${esc(WEEK.cta[0])}</b>${esc(WEEK.cta[1])}</div>
     <div class="by">${WEEK.by.map(esc).join("<br>")}</div>

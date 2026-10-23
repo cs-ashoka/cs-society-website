@@ -219,6 +219,8 @@
     opacity: 0;
     z-index: 1;
   }
+  @media (max-height: 480px) { .tag .px { display: none; } .tag { font-size: .78rem; line-height: 1.3; } .tag .credits small { margin-top: .3em; } }
+  @media (max-height: 720px) { .tag .blurb { display: none; } .tag .credits { margin-top: 0; } }
   .tag .credits { display: block; margin-top: 1.1em; font-size: .88em; line-height: 1.5; }
   .tag .credits b { display: block; font-weight: 700; color: var(--maple); }
   .tag .credits small { display: block; margin-top: .6em; font-size: 1em; }
@@ -658,7 +660,7 @@
       <h1 class="mark" id="title"><span>Autumn</span><span><em>of</em> code</span></h1>
 
       <p class="tag">
-        A month-long celebration of open source, built for campus by the CS&nbsp;Society at Ashoka&nbsp;University.
+        <span class="blurb">A month-long celebration of open source, built for campus by the CS&nbsp;Society at Ashoka&nbsp;University.</span>
         <span class="credits">
           <b>Organised by the C.S.&nbsp;Society</b>
           with the help of the CS Department

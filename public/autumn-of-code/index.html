@@ -578,6 +578,25 @@
     color: var(--card); background: var(--marker); transition: background .2s;
   }
   .dlg-link:hover { background: var(--line); }
+  button.dlg-link { border: 0; cursor: pointer; margin-left: .6em; }
+  .sub-win {
+    position: fixed; z-index: 1000; top: 8vh; left: max(16px, calc(50vw - 21rem));
+    width: min(42rem, calc(100vw - 32px)); max-height: calc(100vh - 16px);
+    display: flex; flex-direction: column; overflow: hidden;
+    background: #FBF2E6; color: #2A1A0F; border: 2px solid #2A1A0F;
+    box-shadow: 0 2px 4px rgba(59, 36, 20, .2), 0 30px 60px -16px rgba(59, 36, 20, .6);
+  }
+  .sub-win[hidden] { display: none; }
+  .sub-bar {
+    display: flex; align-items: center; justify-content: space-between; flex: none;
+    padding: .45em .5em .45em .9em; cursor: move; user-select: none; touch-action: none;
+    font: 700 .74rem/1 "Archivo", "Helvetica Neue", Arial, sans-serif; letter-spacing: .08em; text-transform: uppercase;
+    color: #FBF2E6; background: #2A1A0F;
+  }
+  .sub-close { display: grid; place-items: center; width: 28px; height: 28px; padding: 0; cursor: pointer; color: inherit; background: transparent; border: 0; }
+  .sub-close svg { width: 12px; height: 12px; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; }
+  .sub-close:hover { background: #BE3324; }
+  .sub-body { flex: 1; overflow: auto; background: #fff; }
   .dlg-about[hidden], .dlg-facts[hidden], .dlg-link[hidden], .dlg-soon[hidden], .dlg-note[hidden] { display: none; }
   .dlg-close {
     position: absolute; top: -12px; right: -12px; z-index: 2;
@@ -669,10 +688,20 @@
       <p class="dlg-about" hidden></p>
       <dl class="dlg-facts" hidden></dl>
       <a class="dlg-link" hidden target="_blank" rel="noopener noreferrer"></a>
+      <button type="button" class="dlg-link dlg-submit" hidden>Submission</button>
       <span class="dlg-soon">Coming soon</span>
       <p class="dlg-note">Details for this event are on their way.</p>
     </div>
   </dialog>
+
+  <!-- Draggable submission window (not modal, so it can be moved around the page) -->
+  <div class="sub-win" id="sub-win" role="dialog" aria-label="Competitive designing submission" hidden>
+    <div class="sub-bar" id="sub-bar">
+      <span>Submission</span>
+      <button type="button" class="sub-close" aria-label="Close submission window"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2l10 10M12 2L2 12"/></svg></button>
+    </div>
+    <div class="sub-body"><div data-youform-embed data-form='awijhxvn' data-base-url='https://app.youform.com' data-width='100%' data-height='700'></div></div>
+  </div>
 
   <footer class="close">
     <div class="close-inner">
@@ -1138,6 +1167,7 @@
         ['Prize', '₹2,000'],
       ],
       link: ['Register', 'https://app.youform.com/forms/0wzgbcrg'],
+      submit: true,
     },
     'overnight hackathon': {
       about: 'An overnight DSA hackathon with Professor Aalok Thakkar. It starts with a short session on DSA, then you build your project through the night.',
@@ -1206,7 +1236,7 @@
       .map((e) => {
         let d = DETAILS[e.name.toLowerCase()] || {};
         if (d.ref) d = { ...DETAILS[d.ref], ...d };
-        return { ...e, name: d.as || e.name, about: d.about, facts: d.facts, link: d.link, photoSrc: d.photo, a: day(e.start), b: day(e.end || e.start) };
+        return { ...e, name: d.as || e.name, about: d.about, facts: d.facts, link: d.link, submit: d.submit, photoSrc: d.photo, a: day(e.start), b: day(e.end || e.start) };
       })
       .filter((e) => e.b >= A && e.a <= B)
       .sort((x, y) => x.a - y.a || y.b - x.b)
@@ -1423,7 +1453,8 @@
     (e.facts || []).forEach(([k, v]) => { facts.append(el('dt', '', k), el('dd', '', v)); });
     link.hidden = !e.link;
     if (e.link) { link.textContent = e.link[0]; link.href = e.link[1]; }
-    dlg.querySelector('.dlg-soon').hidden = dlg.querySelector('.dlg-note').hidden = !!e.about;
+    dlg.querySelector('.dlg-submit').hidden = !e.submit;
+    dlg.querySelector('.dlg-soon').hidden =dlg.querySelector('.dlg-note').hidden = !!e.about;
     const ph = dlg.querySelector('.dlg-photo');
     ph.hidden = !e.photo;
     if (e.photo) {
@@ -1434,6 +1465,34 @@
     }
     dlg.showModal();
   }
+  // Submission form: a movable, non-modal window; the embed script loads on first open
+  const win = document.getElementById('sub-win'), bar = document.getElementById('sub-bar');
+  let embedLoaded = false;
+  dlg.querySelector('.dlg-submit').addEventListener('click', () => {
+    dlg.close();
+    win.hidden = false;
+    if (!embedLoaded) {
+      embedLoaded = true;
+      const s = document.createElement('script');
+      s.src = 'https://app.youform.com/embed.js';
+      s.async = true;
+      document.body.append(s);
+    }
+  });
+  win.querySelector('.sub-close').addEventListener('click', () => { win.hidden = true; });
+  bar.addEventListener('pointerdown', (ev) => {
+    if (ev.target.closest('.sub-close')) return;
+    const r = win.getBoundingClientRect(), dx = ev.clientX - r.left, dy = ev.clientY - r.top;
+    bar.setPointerCapture(ev.pointerId);
+    const move = (m) => {
+      win.style.left = Math.min(Math.max(m.clientX - dx, 0), innerWidth - 80) + 'px';
+      win.style.top = Math.min(Math.max(m.clientY - dy, 0), innerHeight - 40) + 'px';
+    };
+    const up = () => { bar.removeEventListener('pointermove', move); bar.removeEventListener('pointerup', up); };
+    bar.addEventListener('pointermove', move);
+    bar.addEventListener('pointerup', up);
+  });
+
   dlg.querySelector('.dlg-close').addEventListener('click', () => dlg.close());
   dlg.addEventListener('click', (ev) => { if (ev.target === dlg) dlg.close(); });  // backdrop
 
